@@ -638,9 +638,7 @@ public class TestTimeline
 		
 		ListIterator<Event> i = (ListIterator<Event>) timeline.iterator();
 		i.next();
-		assertEquals(1,i.nextIndex());
-		
-		
+		assertEquals(1,i.nextIndex());	
 	}
 	
 	
@@ -686,59 +684,6 @@ public class TestTimeline
 	public void testPreviousIndexOnFirstEvent() //Case3: test for index previous on first event, which should fail.
 	{
 		fail();
-	}
-	
-		////****Tests for IterRemove****\\\\
-	
-	@Test
-	public void testIterRemoveStart() //remove the first event
-	{
-		fail("fail");
-
-	}
-
-	
-		////****Tests for IterRemove****\\\\
-	public void testIterRemoveLast() //remove the last event
-	{
-		fail("fail");
-
-	}
-	@Test
-	public void testIterRemoveFromSetOfOne() //remove from a set with one event in it.
-	{
-		fail("fail");
-
-	}
-	
-	public void testIterRemoveFromSetOfMany() //remove from a set with many events in it.
-	{
-		fail("fail");
-
-	}
-	
-	
-		////****Tests for IterAdd()****\\\\
-	
-	@Test
-	public void testIterAddAtStart() //add event to be the first event
-	{
-		fail("fail");
-	}
-	@Test
-	public void testIterAddAtEnd() //add event to be the last event
-	{
-		fail("fail");
-	}
-	@Test
-	public void testIterAddToNonExistingSet() //add to empty set
-	{
-		fail("fail");
-	}
-	@Test
-	public void testIterAddToExistingSet() //add to a existing set with at least one event in the set.
-	{
-		fail("fail");
 	}
 	
 }

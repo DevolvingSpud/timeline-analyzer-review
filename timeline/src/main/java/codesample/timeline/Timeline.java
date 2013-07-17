@@ -250,10 +250,7 @@ public class Timeline implements Collection<Event>
 
        public int nextIndex() //of the all the events or just the events in a particular set.
 		{
-			//Macon
-			// John99
-			return 0;
-			
+			return 0;			
         }
 
 		
@@ -263,7 +260,8 @@ public class Timeline implements Collection<Event>
 
         public void remove()
         {
-
+            throw new UnsupportedOperationException(
+                    "We're not implementing remove!");
         }
 
         // not a necessary method for our case.
