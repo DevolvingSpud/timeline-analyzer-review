@@ -1,12 +1,6 @@
 package codesample.timeline;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-import java.util.TreeMap;
+import java.util.*;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -14,7 +8,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 public class Timeline implements Collection<Event> 
 {
-	public static final DateTimeFormatter fmt = DateTimeFormat.forPattern("mm/dd/yyyy  kk:mm"); //"month/day/year  24hour:minutes of the hour"
+//	public static final DateTimeFormatter fmt = DateTimeFormat.forPattern("mm/dd/yyyy  kk:mm"); //"month/day/year  24hour:minutes of the hour"
 	
 	private TreeMap<DateTime, HashSet<Event>> eventMap = new TreeMap<DateTime, HashSet<Event>>();
 	
@@ -103,13 +97,15 @@ public class Timeline implements Collection<Event>
     private class TimelineIterator implements ListIterator<Event>
 
     {
-        private int eventSetIndex = 0;
-        private int eventIndex = 0;
+        private int eventSetIndex = 0;  // Keeps track of which set you are currently on
+        private int eventIndex = 0;     // Keeps track of which index inside the set you are on
+        private int eventsPosition = 1; // Keeps track of nextIndex()/previousIndex()
+        
+        private HashSet<Event> eventSet; // Represents each individual set
+        private Event[] events;          // Represents an array of all sets for printing in next()/previous()
         
         Object[] eventSets = new Object[0];
         
-		
-                    
         protected TimelineIterator()
         {
             if (eventMap != null && !eventMap.isEmpty())
@@ -122,24 +118,22 @@ public class Timeline implements Collection<Event>
             }            
         }
         
-        private HashSet<Event> eventSet;
-        private Event[] events;
 
-		
         public boolean hasNext() 
         {
         	
-        	if (eventSetIndex >= eventSets.length) {
+        	if (eventSetIndex >= eventSets.length) { // If there are no more sets, retufn false
         		return false;
         	}
         	
         	eventSet = (HashSet<Event>)eventSets[eventSetIndex];
        	        	
-            if (eventIndex < eventSet.size())
+            if (eventIndex < eventSet.size()) // if the current index in set is less than the size, return true
             {
                return true;
             }
-            if(eventSets.length-1 == eventSetIndex && eventIndex==eventSet.size())
+            
+            if(eventSets.length-1 == eventSetIndex && eventIndex==eventSet.size()) // If you are on the last element, return false
             {
             	return false;
             }
@@ -165,27 +159,30 @@ public class Timeline implements Collection<Event>
             {
                nextEvent = events[eventIndex];
                eventIndex++;
+               eventsPosition++;
             } else {
             	eventIndex = 0;
             	eventSetIndex ++;
+            	eventsPosition++;
             	if (eventSetIndex < eventSets.length) {
             		HashSet<Event> eventSet = (HashSet<Event>)eventSets[eventSetIndex];
             		Event[] events = (Event[]) eventSet.toArray(new Event[0]);
             		nextEvent = events[eventIndex];
             		eventIndex++;
+            		eventsPosition++;
             	} else {
                     throw new NoSuchElementException();
             	}
             }
             
-            if(eventSets.length-1 == eventSetIndex && eventIndex==eventSet.size())
+            if(eventSets.length-1 == eventSetIndex && eventIndex==eventSet.size()) // If you are on the very last element, stop
             {
             	return nextEvent;
             }
               
-            if (eventIndex >= events.length) {
+            if (eventIndex >= events.length) { // If you moved to the end of a set, move to the next set
             	eventIndex = 0;
-            	eventSetIndex ++;          	
+            	eventSetIndex ++;
             }
             return nextEvent;
         }
@@ -229,33 +226,34 @@ public class Timeline implements Collection<Event>
                previousEvent = events[eventIndex];
             } else {
             	eventSetIndex --;
+            	eventSet = (HashSet<Event>)eventSets[eventSetIndex];
             	eventIndex = eventSet.size();
             	if (eventSetIndex > 0) {
             		eventSet = (HashSet<Event>)eventSets[eventSetIndex];
             		events = (Event[]) eventSet.toArray(new Event[0]);
             		eventIndex--;
+            		eventsPosition--;
             		previousEvent = events[eventIndex];
             	}
             }
             
-            if (eventSetIndex > 0 && eventIndex == 0) {
+            if (eventSetIndex > 0 && eventIndex == 0) { // If after you moved back you are on the first element of a set, go back to the last element of the previous set
             	eventSetIndex --;
             	eventSet = (HashSet<Event>)eventSets[eventSetIndex];
             	eventIndex = eventSet.size();     	
             }
-            
             return previousEvent;
         }
         
 
        public int nextIndex() //of the all the events or just the events in a particular set.
 		{
-			return 0;			
+        	return eventsPosition;
         }
 
 		
         public int previousIndex() {
-            return 0;
+            return eventsPosition-1; // Since eventsPosition is declared at 1 subtract one when going backwards
         }
 
         public void remove()
@@ -273,7 +271,8 @@ public class Timeline implements Collection<Event>
 
         public void add(Event e)
         {
-
+        	throw new UnsupportedOperationException(
+                    "We're not implementing add!");
         }
 }
 
@@ -326,7 +325,7 @@ public class Timeline implements Collection<Event>
 					addToEventMap(newEventMap, (Event)e);
 				}
 			}
-			
+
 			if (sizeEventMap(eventMap) == sizeEventMap(newEventMap))
 			{
 				return false;
@@ -387,7 +386,7 @@ public class Timeline implements Collection<Event>
 	}
 	
 	
-	// Private methods for retainAll
+	// Private add method for any TreeMap (Used in retainAll)
 	private boolean addToEventMap(TreeMap<DateTime, HashSet<Event>> set, Event e) {
 		if (e != null)
 		{
@@ -401,10 +400,10 @@ public class Timeline implements Collection<Event>
 			return false;
 	}
 	
-	// Private size method 
+	// Private size method for any TreeMap (Used in retainAll)
 	private int sizeEventMap(TreeMap<DateTime, HashSet<Event>> map) {
 		
-		int count =0;
+		int count =0; // Count variable to keep track of all the values in eventMap
 
 		if (!map.isEmpty())
 		{
@@ -414,13 +413,11 @@ public class Timeline implements Collection<Event>
 			}
 				return count;
 		}
-		return 0;
+		return 0; // If it is empty return size of 0
 	}
-	
-	public String toString() // try to use 'fmt' to later better the format of the keys.
+	public String toString() //For Printing out the timeline
 	{
 		StringBuilder sb = new StringBuilder();
-		//sb.append(thing you want to append on to the string);
 		for (DateTime key: eventMap.keySet()) //the keys.
 		{
 			sb.append("[<").append(key).append(">: ");
