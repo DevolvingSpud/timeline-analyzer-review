@@ -568,6 +568,13 @@ public class Timeline implements Collection<Event>
         }
     }
     
+    /**
+     * *
+     * Query methods
+     * 
+     * 
+     */
+    
     public TreeMap<DateTime, HashSet<Event>> startedDuring(DateTime startTime, DateTime endTime)
     {
 		TreeMap<DateTime, HashSet<Event>> newStartEventMap = new TreeMap<DateTime, HashSet<Event>>();
@@ -612,9 +619,9 @@ public class Timeline implements Collection<Event>
 		return newEndEventMap;
     }
     
-    public TreeMap<DateTime, HashSet<Event>> occurredBefore(DateTime startTime, DateTime endTime)
-    {
-    	TreeMap<DateTime, HashSet<Event>> newEndEventMap = new TreeMap<DateTime, HashSet<Event>>();
+    public Timeline occurredBefore(DateTime startTime, DateTime endTime)
+    {	
+    	Timeline occurredBeforeTimeline = new Timeline();
     	
 		for(DateTime key: endTimeEventMap.keySet())
 		{
@@ -622,28 +629,52 @@ public class Timeline implements Collection<Event>
 			{	
 				if (key.equals(startTime) || key.isBefore(startTime))
 				{
-					addEndTime(newEndEventMap,e);
+					occurredBeforeTimeline.add(e);
 				}
 			}
 		}
 		
-		return newEndEventMap;
+		return occurredBeforeTimeline;
     }
     
-    public TreeMap<DateTime, HashSet<Event>> occurredAfter(DateTime startTime, DateTime endTime)
+    public Timeline occurredAfter(DateTime startTime, DateTime endTime)
     {
-    	TreeMap<DateTime, HashSet<Event>> newEndEventMap = new TreeMap<DateTime, HashSet<Event>>();
 
+    	Timeline occurredAfterTimeline = new Timeline();
+    	
 		for(DateTime key: startTimeEventMap.keySet())
 		{
 			for(Event e: startTimeEventMap.get(key))
 			{	
 				if (key.equals(endTime) || key.isAfter(endTime))
 				{
-					addStartTime(newEndEventMap,e);
+					occurredAfterTimeline.add(e);
 				}
 			}
-		}
-		return newEndEventMap;
+		}		
+		return occurredAfterTimeline;
+    }
+    
+    public TreeMap<DateTime, HashSet<Event>> partiallyContained(DateTime startTime, DateTime endTime)
+    {
+    	return null;
+    }
+    
+    public TreeMap<DateTime, HashSet<Event>> touchesQuery(DateTime startTime, DateTime endTime)
+    {
+    	return null;
+    }
+    
+    public TreeMap<DateTime, HashSet<Event>> overlapsQuery(DateTime startTime, DateTime endTime)
+    {
+    	return null;
+    }
+    
+    public TreeMap<DateTime, HashSet<Event>> same(DateTime startTime, DateTime endTime)
+    {
+    	TreeMap<DateTime, HashSet<Event>> newStartEventMap = new TreeMap<DateTime, HashSet<Event>>();
+    	TreeMap<DateTime, HashSet<Event>> newEndEventMap = new TreeMap<DateTime, HashSet<Event>>();
+
+    	return newStartEventMap;
     }
 }

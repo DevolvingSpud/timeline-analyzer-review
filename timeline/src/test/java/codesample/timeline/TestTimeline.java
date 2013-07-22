@@ -799,14 +799,13 @@ public class TestTimeline
 		timeline.addAll(list);
 		
 		System.out.println(timeline);
-		
 		System.out.println(timeline.occurredBefore(new DateTime(2004,12,25,0,0), new DateTime(2007,12,25,0,0)));
 		
 	}
 	
 	@Test
 	public void testOccurredAfter(){
-		DateTime start = new DateTime(2003,12,25,0,0);
+		DateTime start = new DateTime(2003,10,25,0,0);
 		DateTime start2 = new DateTime(2004,12,25,0,0);
 		DateTime end = new DateTime(2005,12,25,0,0);
 		DateTime end2 = new DateTime(2008,12,25,0,0);
@@ -814,7 +813,7 @@ public class TestTimeline
 		DateTime start3 = new DateTime(1999,12,3,0,0);
 		DateTime end3 = new DateTime(2001,10,12,0,0);
 		Event a = new NamedEvent("EventA", start);
-		Event b = new NamedEvent("EventB", start,end);
+		Event b = new NamedEvent("EventB", start2,end);
 		Event c = new NamedEvent("EventC", start2,end);
 		Event d = new NamedEvent("EventD", start2,end2);
 		
@@ -826,7 +825,7 @@ public class TestTimeline
 		
 		System.out.println(timeline);
 		
-		System.out.println(timeline.occurredAfter(new DateTime(2004,12,25,0,0), new DateTime(2004,12,25,0,0)));
+		System.out.println(timeline.occurredAfter(new DateTime(2000,12,25,0,0), new DateTime(2003,12,25,0,0)));
 		
 	}
 	
@@ -847,6 +846,25 @@ public class TestTimeline
 	
 	@Test
 	public void testSame(){
+		DateTime start = new DateTime(2003,12,25,0,0);
+		DateTime start2 = new DateTime(2004,12,25,0,0);
+		DateTime end = new DateTime(2005,12,25,0,0);
+		DateTime end2 = new DateTime(2008,12,25,0,0);
+		
+		DateTime start3 = new DateTime(1999,12,3,0,0);
+		DateTime end3 = new DateTime(2001,10,12,0,0);
+		Event a = new NamedEvent("EventA", start);
+		Event b = new NamedEvent("EventB", start,end);
+		Event c = new NamedEvent("EventC", start2,end);
+		Event d = new NamedEvent("EventD", start2,end2);
+		
+		Event e = new NamedEvent("EventE", start3,end3);
+		
+		ArrayList<Event> list = new ArrayList<Event>();
+		Collections.addAll(list,a,b,c,d,e);
+		timeline.addAll(list);
+		
+		System.out.println(timeline.same(new DateTime(2003,12,25,0,0), new DateTime(2005,12,25,0,0)));
 		
 	}
 }
