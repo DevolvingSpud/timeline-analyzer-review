@@ -567,4 +567,54 @@ public class Timeline implements Collection<Event>
                     "We're not implementing add!");
         }
     }
+    
+    public String startedDuring(DateTime startTime, DateTime endTime)
+    {
+    	StringBuilder sb = new StringBuilder();
+		sb.append("The events that started during the query ").append(startTime).append(" and ");
+		sb.append(endTime).append(" are :\n");
+		
+		for(DateTime key: startTimeEventMap.keySet())
+		{
+			for(Event e: startTimeEventMap.get(key))
+			{	
+				if (key.equals(startTime))
+				{
+					sb.append(key).append(": ").append(e).append("\n");
+				}
+				
+				if (key.isAfter(startTime) && key.isBefore(endTime))
+				{
+					sb.append(key).append(": ").append(e).append("\n");
+				}
+			}
+		}
+		return sb.toString();
+    }
+    
+    public String endedDuring(DateTime startTime, DateTime endTime)
+    {
+    	StringBuilder sb = new StringBuilder();
+		sb.append("The events that ended during the query ").append(startTime).append(" and ");
+		sb.append(endTime).append(" are :\n");
+		
+		for(DateTime key: endTimeEventMap.keySet())
+		{
+			for(Event e: endTimeEventMap.get(key))
+			{	
+				if (key.equals(startTime))
+				{
+					sb.append(key).append(": ").append(e).append("\n");
+				}
+				
+				if (key.isAfter(startTime) && key.isBefore(endTime))
+				{
+					sb.append(key).append(": ").append(e).append("\n");
+				}
+			}
+		}
+    	
+    	
+    	return sb.toString();
+    }
 }

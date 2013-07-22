@@ -738,4 +738,73 @@ public class TestTimeline
 			System.out.println("At position " + i.previousIndex() + " is: " +i.previous());
 		}
 	}
+	
+	@Test
+	public void testStartedDuring(){
+		DateTime start = new DateTime(2003,12,25,0,0);
+		DateTime start2 = new DateTime(2004,12,25,0,0);
+		DateTime end = new DateTime(2005,12,25,0,0);
+		DateTime end2 = new DateTime(2008,12,25,0,0);
+		Event a = new NamedEvent("EventA", start);
+		Event b = new NamedEvent("EventB", start,end);
+		Event c = new NamedEvent("EventC", start2,end);
+		Event d = new NamedEvent("EventD", start2,end2);
+		ArrayList<Event> list = new ArrayList<Event>();
+		Collections.addAll(list,a,b,c,d);
+		timeline.addAll(list);
+		
+		System.out.println(timeline);
+		
+		System.out.println(timeline.startedDuring(new DateTime(2004,12,25,0,0),new DateTime(2008,12,25,0,0)));
+	}
+	
+	@Test
+	public void testEndedDuring(){
+		DateTime start = new DateTime(2003,12,25,0,0);
+		DateTime start2 = new DateTime(2004,12,25,0,0);
+		DateTime end = new DateTime(2005,12,25,0,0);
+		DateTime end2 = new DateTime(2008,12,25,0,0);
+		Event a = new NamedEvent("EventA", start);
+		Event b = new NamedEvent("EventB", start,end);
+		Event c = new NamedEvent("EventC", start2,end);
+		Event d = new NamedEvent("EventD", start2,end2);
+		ArrayList<Event> list = new ArrayList<Event>();
+		Collections.addAll(list,a,b,c,d);
+		timeline.addAll(list);
+		
+		System.out.println(timeline);
+		
+		System.out.println(timeline.endedDuring(new DateTime(2004,12,25,0,0), new DateTime(2007,12,25,0,0)));
+		
+	}
+	
+	@Test
+	public void testOccurredBefore(){
+		
+	}
+	
+	@Test
+	public void testOccurredAfter(){
+		
+	}
+	
+	@Test
+	public void testPartiallyContained(){
+		
+	}
+	
+	@Test
+	public void testIfAnyPartOfEventIsInQuery(){
+		
+	}
+	
+	@Test
+	public void testOverlapsQuery(){
+		
+	}
+	
+	@Test
+	public void testSame(){
+		
+	}
 }
