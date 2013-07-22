@@ -388,7 +388,7 @@ public class Timeline implements Collection<Event>
         /* (non-Javadoc)
          * @see java.util.ListIterator#hasNext()
          */
-        public boolean hasNext() 
+		public boolean hasNext() 
         {
         	
         	if (eventSetIndex >= eventSets.length) { // If there are no more sets, retufn false
@@ -401,7 +401,6 @@ public class Timeline implements Collection<Event>
             {
                return true;
             }
-            
             if(eventSets.length-1 == eventSetIndex && eventIndex==eventSet.size()) // If you are on the last element, return false
             {
             	return false;
@@ -421,7 +420,7 @@ public class Timeline implements Collection<Event>
         /* (non-Javadoc)
          * @see java.util.ListIterator#next()
          */
-        public Event next()
+		public Event next()
         {
         	eventSet = (HashSet<Event>)eventSets[eventSetIndex];
         	events = (Event[]) eventSet.toArray(new Event[0]);
@@ -487,7 +486,7 @@ public class Timeline implements Collection<Event>
         /* (non-Javadoc)
          * @see java.util.ListIterator#previous()
          */
-        public Event previous() 
+		public Event previous() 
         {
 			eventSet = (HashSet<Event>)eventSets[eventSetIndex];
         	events = (Event[]) eventSet.toArray(new Event[0]);
@@ -498,9 +497,10 @@ public class Timeline implements Collection<Event>
         		throw new NoSuchElementException();
         	}
       
-            if (eventIndex > 0)
+            if (eventIndex > 0) // If you are anywhere that isnt the first element, move back one
             {
-               eventIndex--;  
+               eventIndex--;
+               eventsPosition--;
                previousEvent = events[eventIndex];
             } else {
             	eventSetIndex --;

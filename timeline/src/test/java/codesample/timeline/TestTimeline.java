@@ -730,9 +730,9 @@ public class TestTimeline
 		
 		while(i.hasNext())
 		{
-			i.next();
+			i.next();		
 		}
-		
+//		System.out.println("At position " + i.nextIndex() + " is: " +i.next());
 		while (i.hasPrevious())
 		{
 			System.out.println("At position " + i.previousIndex() + " is: " +i.previous());
