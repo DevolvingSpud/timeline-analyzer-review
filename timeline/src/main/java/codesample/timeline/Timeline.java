@@ -12,10 +12,12 @@ public class Timeline implements Collection<Event>
 {
 //	public static final DateTimeFormatter fmt = DateTimeFormat.forPattern("mm/dd/yyyy  kk:mm"); //"month/day/year  24hour:minutes of the hour"
 	
-	private TreeMap<DateTime, HashSet<Event>> eventMap = new TreeMap<DateTime, HashSet<Event>>();
+	private TreeMap<DateTime, HashSet<Event>> startTimeEventMap = new TreeMap<DateTime, HashSet<Event>>();
+	private TreeMap<DateTime, HashSet<Event>> endTimeEventMap = new TreeMap<DateTime, HashSet<Event>>();
 	
 	public boolean add(Event e) {
-		return addToEventMap(eventMap, e);
+		addEndTime(endTimeEventMap,e);
+		return addStartTime(startTimeEventMap,e);
 	}
 	
 	/* (non-Javadoc)
@@ -37,7 +39,8 @@ public class Timeline implements Collection<Event>
 	 * @see java.util.Collection#clear()
 	 */
 	public void clear() {
-		eventMap.clear(); // Clears the map
+		startTimeEventMap.clear(); // Clears the map
+		endTimeEventMap.clear();
 	}
 
 	/* (non-Javadoc)
@@ -53,10 +56,10 @@ public class Timeline implements Collection<Event>
 		Event myEvent = (Event)o;
 		DateTime startTime = myEvent.getStart();
 		
-		if (eventMap.containsKey(startTime)) // Check to see if the key is there.
+		if (startTimeEventMap.containsKey(startTime)) // Check to see if the key is there.
 		{
 			// Then check if the event is there
-			if (eventMap.get(startTime).contains(myEvent))
+			if (startTimeEventMap.get(startTime).contains(myEvent))
 			{
 				return true;
 			}
@@ -90,7 +93,7 @@ public class Timeline implements Collection<Event>
 	 * @see java.util.Collection#isEmpty()
 	 */
 	public boolean isEmpty(){
-		if (eventMap.isEmpty()) // returns true if the map is empty
+		if (startTimeEventMap.isEmpty() && endTimeEventMap.isEmpty()) // returns true if the map is empty
 		{
 			return true;
 		}
@@ -114,21 +117,23 @@ public class Timeline implements Collection<Event>
 			return false;
 		}
 		
+		removeEndTime(o);
+		
 		Event myEvent = (Event)o;
 		DateTime startTime = myEvent.getStart();
 		
-		if (!eventMap.containsKey(startTime)) // if the eventMap does not contain the key return false, cannot remove
+		if (!startTimeEventMap.containsKey(startTime)) // if the eventMap does not contain the key return false, cannot remove
 		{
 			return false;
 		}
 		
-		if (eventMap.get(myEvent.getStart()).size()==1) // If the size of the set contains one event, remove the key
+		if (startTimeEventMap.get(myEvent.getStart()).size()==1) // If the size of the set contains one event, remove the key
 		{
-			eventMap.remove(myEvent.getStart());
+			startTimeEventMap.remove(myEvent.getStart());
 			return true;
 		}
 				
-		HashSet<Event> events = eventMap.get(startTime); // else, remove the event located at a given key
+		HashSet<Event> events = startTimeEventMap.get(startTime); // else, remove the event located at a given key
 		return events.remove(myEvent);
 	}
 
@@ -153,22 +158,25 @@ public class Timeline implements Collection<Event>
 		
 		if(c!=null)
 		{
-			TreeMap<DateTime, HashSet<Event>> newEventMap = new TreeMap<DateTime, HashSet<Event>>();
+			TreeMap<DateTime, HashSet<Event>> newStartEventMap = new TreeMap<DateTime, HashSet<Event>>();
+			TreeMap<DateTime, HashSet<Event>> newEndEventMap = new TreeMap<DateTime, HashSet<Event>>();
+
 			
 			for (Object e: c)
 			{
 				if (e instanceof Event && this.contains(e))
 				{
-					addToEventMap(newEventMap, (Event)e);
+					addStartTime(newStartEventMap, (Event)e);
 				}
 			}
 
-			if (sizeEventMap(eventMap) == sizeEventMap(newEventMap))
+			if (sizeEventMap(startTimeEventMap) == sizeEventMap(newStartEventMap))
 			{
 				return false;
 			}
 			
-			eventMap= newEventMap;
+			startTimeEventMap= newStartEventMap;
+			endTimeEventMap = newEndEventMap;
 			return true;
 		}		
 		return false;	
@@ -178,19 +186,19 @@ public class Timeline implements Collection<Event>
 	 * @see java.util.Collection#size()
 	 */
 	public int size() {	
-		return sizeEventMap(eventMap);
+		return sizeEventMap(startTimeEventMap);
 	}
 
 	/* (non-Javadoc)
 	 * @see java.util.Collection#toArray()
 	 */
 	public Object[] toArray() {
-		if (!eventMap.isEmpty())
+		if (!startTimeEventMap.isEmpty())
 		{
 			ArrayList<Event> list = new ArrayList<Event>();
-			for(DateTime key: eventMap.keySet())
+			for(DateTime key: startTimeEventMap.keySet())
 			{
-				for(Event e: eventMap.get(key))
+				for(Event e: startTimeEventMap.get(key))
 				{		
 					list.add(e);	
 				}
@@ -206,15 +214,15 @@ public class Timeline implements Collection<Event>
 	 * @see java.util.Collection#toArray(java.lang.Object[])
 	 */
 	public <T> T[] toArray(T[] a) {
-		if (!eventMap.isEmpty())
+		if (!startTimeEventMap.isEmpty())
 		{
 			ArrayList<Event> list = new ArrayList<Event>();
 			
-			for(DateTime key: eventMap.keySet())
+			for(DateTime key: startTimeEventMap.keySet())
 			{
-				for(Event e: eventMap.get(key))
+				for(Event e: startTimeEventMap.get(key))
 				{
-					for(int i=0; i<sizeEventMap(eventMap); i++)
+					for(int i=0; i<sizeEventMap(startTimeEventMap); i++)
 					{
 						System.out.println("[");
 						list.add(e);
@@ -229,6 +237,37 @@ public class Timeline implements Collection<Event>
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("StartTime Events: \n");
+		for (DateTime key: startTimeEventMap.keySet()) //the keys.
+		{
+			sb.append("[<").append(key).append(">: ");
+			for (Event e: startTimeEventMap.get(key)) //gets each individual event  
+			{
+				sb.append(e);
+			}
+			sb.append("\n");
+		}
+		
+		sb.append("\nEndTime Events \n");
+		for (DateTime key: endTimeEventMap.keySet()) //the keys.
+		{
+			sb.append("[<").append(key).append(">: ");
+			for (Event e: endTimeEventMap.get(key)) //gets each individual event  
+			{
+				sb.append(e);
+			}
+			sb.append("\n");
+		}
+		
+		return sb.toString();
+	}
+	
 	
 	/**
 	 * Adds an Event to a specified map of DateTimes to sets of Events.
@@ -237,17 +276,53 @@ public class Timeline implements Collection<Event>
 	 * @param e Event to add to the passed-in TreeMap of events
 	 * @return
 	 */
-	private boolean addToEventMap(TreeMap<DateTime, HashSet<Event>> mapOfEvents, Event e) {
+	private boolean addStartTime(TreeMap<DateTime, HashSet<Event>> set, Event e) {
 		if (e != null)
 		{
-			if(!mapOfEvents.containsKey(e.getStart()))   // If the DateTime is not there create a new key and hash set
+			if(!set.containsKey(e.getStart()))   // If the DateTime is not there create a new key and hash set
 			{
-				mapOfEvents.put(e.getStart(), new HashSet<Event>()); // Places the DateTime and an empty Set into the map
+				set.put(e.getStart(), new HashSet<Event>()); // Places the DateTime and an empty Set into the map
 			}
-				mapOfEvents.get(e.getStart()).add(e); // Adds the new event to the empty Set in the given DateTime
+				set.get(e.getStart()).add(e); // Adds the new event to the empty Set in the given DateTime
 				return true;
 		}
-		return false;
+			return false;
+	}
+	
+	// Private add End Time method for any TreeMap 
+	private boolean addEndTime(TreeMap<DateTime, HashSet<Event>> set, Event e) {
+		if (e != null)
+		{
+			if(!set.containsKey(e.getEnd()))   // If the DateTime is not there create a new key and hash set
+			{
+				set.put(e.getEnd(), new HashSet<Event>()); // Places the DateTime and an empty Set into the map
+			}
+				set.get(e.getEnd()).add(e); // Adds the new event to the empty Set in the given DateTime
+				return true;
+		}
+			return false;
+	}
+	
+	private boolean removeEndTime(Object o)
+	{
+		Event myEvent = (Event)o;
+		DateTime endTime = myEvent.getEnd();
+		
+		if (!endTimeEventMap.containsKey(endTime)) // if the eventMap does not contain the key return false, cannot remove
+		{
+			return false;
+		}
+		
+		if (endTimeEventMap.get(myEvent.getEnd()).size()==1) // If the size of the set contains one event, remove the key
+		{
+			endTimeEventMap.remove(myEvent.getEnd());
+			return true;
+		}
+				
+		HashSet<Event> events = endTimeEventMap.get(endTime); // else, remove the event located at a given key
+		
+		return events.remove(myEvent);
+		
 	}
 	
 	/**
@@ -271,26 +346,7 @@ public class Timeline implements Collection<Event>
 		return 0;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString()
-	{
-		StringBuilder sb = new StringBuilder();
-		for (DateTime key: eventMap.keySet()) //the keys.
-		{
-			sb.append("[<").append(key).append(">: ");
-			for (Event e: eventMap.get(key)) //gets each individual event  
-			{
-				sb.append("[").append(e).append("]");
-				
-			}
-			sb.append("\n");
-		}
-		
-		
-		return sb.toString();
-	}
+	
 	
 	/**
      * This Iterator is designed to walk through the Timeline as if it were an
@@ -318,9 +374,9 @@ public class Timeline implements Collection<Event>
          */
         protected TimelineIterator()
         {
-            if (eventMap != null && !eventMap.isEmpty())
+            if (startTimeEventMap != null && !startTimeEventMap.isEmpty())
             {
-                Collection<HashSet<Event>> valueCollection = eventMap.values();
+                Collection<HashSet<Event>> valueCollection = startTimeEventMap.values();
                 if (valueCollection != null)
                 {
                     eventSets = valueCollection.toArray();
