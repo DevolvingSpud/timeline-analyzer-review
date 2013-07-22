@@ -568,53 +568,82 @@ public class Timeline implements Collection<Event>
         }
     }
     
-    public String startedDuring(DateTime startTime, DateTime endTime)
+    public TreeMap<DateTime, HashSet<Event>> startedDuring(DateTime startTime, DateTime endTime)
     {
-    	StringBuilder sb = new StringBuilder();
-		sb.append("The events that started during the query ").append(startTime).append(" and ");
-		sb.append(endTime).append(" are :\n");
-		
+		TreeMap<DateTime, HashSet<Event>> newStartEventMap = new TreeMap<DateTime, HashSet<Event>>();
+
 		for(DateTime key: startTimeEventMap.keySet())
 		{
 			for(Event e: startTimeEventMap.get(key))
 			{	
 				if (key.equals(startTime))
 				{
-					sb.append(key).append(": ").append(e).append("\n");
+					addStartTime(newStartEventMap,e);
 				}
 				
 				if (key.isAfter(startTime) && key.isBefore(endTime))
 				{
-					sb.append(key).append(": ").append(e).append("\n");
+					addStartTime(newStartEventMap,e);
 				}
 			}
 		}
-		return sb.toString();
+		return newStartEventMap;
     }
     
-    public String endedDuring(DateTime startTime, DateTime endTime)
+    public TreeMap<DateTime, HashSet<Event>> endedDuring(DateTime startTime, DateTime endTime)
     {
-    	StringBuilder sb = new StringBuilder();
-		sb.append("The events that ended during the query ").append(startTime).append(" and ");
-		sb.append(endTime).append(" are :\n");
-		
+    	TreeMap<DateTime, HashSet<Event>> newEndEventMap = new TreeMap<DateTime, HashSet<Event>>();
+
 		for(DateTime key: endTimeEventMap.keySet())
 		{
 			for(Event e: endTimeEventMap.get(key))
 			{	
-				if (key.equals(startTime))
+				if (key.equals(endTime))
 				{
-					sb.append(key).append(": ").append(e).append("\n");
+					addStartTime(newEndEventMap,e);
 				}
 				
-				if (key.isAfter(startTime) && key.isBefore(endTime))
+				if (key.isAfter(endTime) && key.isBefore(endTime))
 				{
-					sb.append(key).append(": ").append(e).append("\n");
+					addStartTime(newEndEventMap,e);
 				}
 			}
 		}
+		return newEndEventMap;
+    }
+    
+    public TreeMap<DateTime, HashSet<Event>> occurredBefore(DateTime startTime, DateTime endTime)
+    {
+    	TreeMap<DateTime, HashSet<Event>> newEndEventMap = new TreeMap<DateTime, HashSet<Event>>();
     	
-    	
-    	return sb.toString();
+		for(DateTime key: endTimeEventMap.keySet())
+		{
+			for(Event e: endTimeEventMap.get(key))
+			{	
+				if (key.equals(startTime) || key.isBefore(startTime))
+				{
+					addEndTime(newEndEventMap,e);
+				}
+			}
+		}
+		
+		return newEndEventMap;
+    }
+    
+    public TreeMap<DateTime, HashSet<Event>> occurredAfter(DateTime startTime, DateTime endTime)
+    {
+    	TreeMap<DateTime, HashSet<Event>> newEndEventMap = new TreeMap<DateTime, HashSet<Event>>();
+
+		for(DateTime key: startTimeEventMap.keySet())
+		{
+			for(Event e: startTimeEventMap.get(key))
+			{	
+				if (key.equals(endTime) || key.isAfter(endTime))
+				{
+					addStartTime(newEndEventMap,e);
+				}
+			}
+		}
+		return newEndEventMap;
     }
 }
