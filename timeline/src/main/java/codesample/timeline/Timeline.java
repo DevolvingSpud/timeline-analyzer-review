@@ -655,26 +655,106 @@ public class Timeline implements Collection<Event>
 		return occurredAfterTimeline;
     }
     
-    public TreeMap<DateTime, HashSet<Event>> partiallyContained(DateTime startTime, DateTime endTime)
+    public Timeline occurredDuring(DateTime startTime, DateTime endTime)
     {
-    	return null;
+    	Timeline duringTimeline = new Timeline();
+    	
+    	for( Event e: this)
+    	{
+    		if (e.getStart().equals(startTime) && e.getEnd().equals(endTime))
+    		{
+    			duringTimeline.add(e);
+    		} 
+    		
+    		if (e.getStart().isAfter(startTime) && e.getEnd().isBefore(endTime))
+    		{
+    			duringTimeline.add(e);
+    		}
+    	}
+    	return duringTimeline;
     }
     
-    public TreeMap<DateTime, HashSet<Event>> touchesQuery(DateTime startTime, DateTime endTime)
+    public Timeline partiallyContained(DateTime startTime, DateTime endTime)
     {
-    	return null;
+    	Timeline partialTimeline = new Timeline();
+    	
+    	for (Event e: this)
+    	{
+    		if(e.getStart().isBefore(startTime) && e.getEnd().isAfter(startTime) && e.getEnd().isBefore(endTime))
+    		{
+    			partialTimeline.add(e);
+    		}
+    		
+    		if (e.getStart().isAfter(startTime) && e.getStart().isBefore(endTime) && e.getEnd().isAfter(endTime))
+    		{
+    			partialTimeline.add(e);
+    		}
+    	}
+    	
+    	return partialTimeline;
     }
     
-    public TreeMap<DateTime, HashSet<Event>> overlapsQuery(DateTime startTime, DateTime endTime)
+    public Timeline includedInQuery(DateTime startTime, DateTime endTime)
     {
-    	return null;
+    	Timeline includedTimeline = new Timeline();
+    	
+    	for (Event e: this)
+    	{
+    		if (e.getStart().isBefore(startTime) && e.getEnd().isAfter(endTime))
+    		{
+    			includedTimeline.add(e);
+    		}
+    		
+    		if (e.getStart().equals(startTime) && e.getEnd().equals(endTime))
+    		{
+    			includedTimeline.add(e);
+    		}
+    		
+    		if(e.getStart().isBefore(startTime) && e.getEnd().isAfter(startTime) && e.getEnd().isBefore(endTime))
+    		{
+    			includedTimeline.add(e);
+    		}
+    		
+    		if (e.getStart().isAfter(startTime) && e.getStart().isBefore(endTime) && e.getEnd().isAfter(endTime))
+    		{
+    			includedTimeline.add(e);
+    		}
+    		
+    		if (e.getStart().isAfter(startTime) && e.getEnd().isBefore(endTime))
+        	{
+        		includedTimeline.add(e);
+        	}
+    	}
+    	return includedTimeline;
     }
     
-    public TreeMap<DateTime, HashSet<Event>> same(DateTime startTime, DateTime endTime)
+    public Timeline overlapsQuery(DateTime startTime, DateTime endTime)
     {
-    	TreeMap<DateTime, HashSet<Event>> newStartEventMap = new TreeMap<DateTime, HashSet<Event>>();
-    	TreeMap<DateTime, HashSet<Event>> newEndEventMap = new TreeMap<DateTime, HashSet<Event>>();
+    	Timeline overlapsTimeline = new Timeline();
+    	
+    	for (Event e: this)
+    	{
+    		if (e.getStart().isBefore(startTime) && e.getEnd().isAfter(endTime))
+    		{
+    			overlapsTimeline.add(e);
+    		}
+    	}
+    	
+    	return overlapsTimeline;
+    }
+    
+    public Timeline same(DateTime startTime, DateTime endTime)
+    {
+    	Timeline sameTimeline = new Timeline();
+    	
+    	for(Event e: this)
+    	{
+    		if (e.getStart().equals(startTime) && e.getEnd().equals(endTime))
+    		{
+    			sameTimeline.add(e);
+    		}
+    	}
 
-    	return newStartEventMap;
+    	return sameTimeline;
     }
 }
