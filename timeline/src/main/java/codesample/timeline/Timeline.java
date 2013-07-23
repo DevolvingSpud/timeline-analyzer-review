@@ -12,6 +12,8 @@ public class Timeline implements Collection<Event>
 {
 //	public static final DateTimeFormatter fmt = DateTimeFormat.forPattern("mm/dd/yyyy  kk:mm"); //"month/day/year  24hour:minutes of the hour"
 	
+	private enum timelineType {YEARS,DAYS,HOURS,MINUTES,SECONDS,MILLISECONDS};
+	
 	private TreeMap<DateTime, HashSet<Event>> startTimeEventMap = new TreeMap<DateTime, HashSet<Event>>();
 	private TreeMap<DateTime, HashSet<Event>> endTimeEventMap = new TreeMap<DateTime, HashSet<Event>>();
 	
