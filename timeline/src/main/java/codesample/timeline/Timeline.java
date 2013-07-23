@@ -623,17 +623,14 @@ public class Timeline implements Collection<Event>
     {	
     	Timeline occurredBeforeTimeline = new Timeline();
     	
-		for(DateTime key: endTimeEventMap.keySet())
-		{
-			for(Event e: endTimeEventMap.get(key))
+			for(Event e: this)
 			{	
-				if (key.equals(startTime) || key.isBefore(startTime))
+				if (e.getEnd().equals(startTime) || e.getEnd().isBefore(startTime))
 				{
 					occurredBeforeTimeline.add(e);
 				}
 			}
-		}
-		
+	
 		return occurredBeforeTimeline;
     }
     
@@ -641,17 +638,15 @@ public class Timeline implements Collection<Event>
     {
 
     	Timeline occurredAfterTimeline = new Timeline();
-    	
-		for(DateTime key: startTimeEventMap.keySet())
+				
+		for (Event e: this)
 		{
-			for(Event e: startTimeEventMap.get(key))
-			{	
-				if (key.equals(endTime) || key.isAfter(endTime))
-				{
-					occurredAfterTimeline.add(e);
-				}
+			if(e.getStart().equals(endTime) || e.getStart().isAfter(endTime))
+			{
+				occurredAfterTimeline.add(e);
+
 			}
-		}		
+		}
 		return occurredAfterTimeline;
     }
     
