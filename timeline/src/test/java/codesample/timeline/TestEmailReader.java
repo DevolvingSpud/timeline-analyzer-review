@@ -14,11 +14,16 @@ public class TestEmailReader
 	public void testEmailReader() {
 		EmailReader er = new EmailReader();
 		String path = "C:/Users/mcarlton/Desktop/allen-p._sent_mail.15Emails";
-		try {
+		try 
+		{
 			er.readEmails(FileSystems.getDefault().getPath(path));
-		} catch (FileNotFoundException e) {
+		} 
+		catch (FileNotFoundException e) 
+		{
 			e.printStackTrace();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 	}
