@@ -1,6 +1,7 @@
 package codesample.timeline;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.fail;
 
 import java.util.Date;
@@ -50,7 +51,7 @@ public class TestEmailEvents
 	
 	
 	//WEB ADDRESS: https://forums.oracle.com/thread/2178060
-	/*//not sure how to test this...I clearly have to set a message ID.
+	//not sure how to test this...I clearly have to set a message ID.
 	@Test
 	public void TestGetMessageID() throws MessagingException
 	{
@@ -61,7 +62,7 @@ public class TestEmailEvents
 		mime.set
 		EmailEvent event = new EmailEvent(mime);
 		assertEquals(id, event.getMessageID());
-	}*/
+	}
 	
 	@Test
 	public void TestGetSenderEmail()
@@ -155,12 +156,40 @@ public class TestEmailEvents
 		
 		mime.setRecipient(Message.RecipientType.BCC, bcc);
 		EmailEvent event = new EmailEvent(mime);
-		assertEquals(bcc, event.getCC());
+		assertEquals(bcc, event.getBCC());
 	}
 	
+	
 	@Test
-	public void TestSize()
+	public void TestAttachmentSuccess() throws MessagingException
 	{
+		Properties props = new Properties();
+		Session session = Session.getDefaultInstance(props, null);
+		MimeMessage mime = new MimeMessage(session);
 		
+		String s = "testFile";
+		mime.setDisposition(s);
+		
+		EmailEvent event = new EmailEvent(mime);
+		
+		//System.out.println(event.attachment());
+		assertEquals(s,event.attachment());
+	}
+	@Test
+	public void TestAttachmentFail() throws MessagingException
+	{
+		Properties props = new Properties();
+		Session session = Session.getDefaultInstance(props, null);
+		MimeMessage mime = new MimeMessage(session);
+		
+		String s = "testFile";
+		//mime.setDisposition(s);
+		
+		EmailEvent event = new EmailEvent(mime);
+		
+		//System.out.println(event.attachment());
+		assertNotSame(s,event.attachment());
 	}
 }
+
+
