@@ -2,6 +2,7 @@ package codesample.timeline;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Date;
@@ -11,6 +12,7 @@ import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.joda.time.DateTime;
@@ -18,82 +20,59 @@ import org.junit.Test;
 
 public class TestEmailEvents 
 {
-	@Test
-	public void TestGetStart() throws MessagingException
-	{
-		DateTime d = new DateTime(1994,11,25,0,0); //time set
-		Date e = d.toDate(); //convert to Java.util date format
-		Properties props = new Properties();
-		Session session = Session.getDefaultInstance(props, null);
-		
-		MimeMessage mime = new MimeMessage(session); 
-		mime.setSentDate(e);  //setting date.
-		EmailEvent event = new EmailEvent(mime); //make an event for extracting
-		//System.out.println(event.getStart().toDate());
-		//System.out.println(e);
 
-		assertEquals(e,event.getStart()); //testing the event
-	}
-	
 	@Test
-	public void TestGetEnd() throws MessagingException 
-	{
-		DateTime d = new DateTime(94,11,25,0,0); //time set.
-		Date e = d.toDate(); //convert to java.util.Date.
-		Properties props = new Properties();
-		Session session = Session.getDefaultInstance(props, null);
-		MimeMessage mime = new MimeMessage(session);
-		mime.setSentDate(e); //setting the date.
-		EmailEvent event = new EmailEvent(mime);
-		
-		assertEquals(e, event.getStart());
-	}
-	
-	
-	//WEB ADDRESS: https://forums.oracle.com/thread/2178060
-	//not sure how to test this...I clearly have to set a message ID.
-	@Test
-	public void TestGetMessageID() throws MessagingException
-	{
-		String id = "22287574.1075863594524"; //message ID
-		Properties props = new Properties();
-		Session session = Session.getDefaultInstance(props, null);
-		MimeMessage mime = new MimeMessage(session);
-		mime.set
-		EmailEvent event = new EmailEvent(mime);
-		assertEquals(id, event.getMessageID());
-	}
-	
-	@Test
-	public void TestGetSenderEmail()
+	public void TestGetSenderEmail() throws MessagingException
 	{
 		Properties props = new Properties();
 		Session session = Session.getDefaultInstance(props, null);
 		MimeMessage mime = new MimeMessage(session);
 		
-		Address [] senders = new Address[] {InternetAddress.parse("example1@email.com"),
-										InternetAddress.parse("example2@email.com"),
-										InternetAddress.parse("example3@email.com")};
-		
-		mime.setSender(senders);
-		EmailEvent event = new EmailEvent(mime);
-		assertEquals(senders, event.getSenderEmail());
+		String sender = "admin@whatever.com";
+		InternetAddress iaSender = new InternetAddress(sender);
+		mime.setSender(iaSender);
+		EmailEvent e = new EmailEvent(mime);
+		Address from = e.getSenderEmail();
+		assertEquals(sender, from.toString());
 	}
 	
 	@Test
-	public void TestGetReceiverEmail()
+	public void TestGetReceiverEmail() throws MessagingException
 	{
 		Properties props = new Properties();
 		Session session = Session.getDefaultInstance(props, null);
 		MimeMessage mime = new MimeMessage(session);
 		
-		Address [] receivers = new Address[] {InternetAddress.parse("example1@email.com"),
-										InternetAddress.parse("example2@email.com"),
-										InternetAddress.parse("example3@email.com")};
+		String receiver = "muffin@whatever.com";
+		InternetAddress iaReceiver = new InternetAddress(receiver);
+		mime.setRecipient(Message.RecipientType.TO, iaReceiver);
+		EmailEvent e = new EmailEvent(mime);
 		
-		mime.setRecipient(Message.RecipientType.TO, receivers);
-		EmailEvent event = new EmailEvent(mime);
-		assertEquals(receivers, event.getCC());
+		for(Address a: e.getReceiverEmail())
+		{
+			//System.out.println(a.toString());
+			assertEquals(receiver, a.toString());
+		}
+	}
+	@Test
+	public void TestIsToSelf() throws MessagingException
+	{
+		Properties props = new Properties();
+		Session session = Session.getDefaultInstance(props, null);
+		MimeMessage mime = new MimeMessage(session);
+		//sender
+		String sender = "admin@whatever.com";
+		InternetAddress iaSender = new InternetAddress(sender);
+		mime.setSender(iaSender);
+		//receiver
+		String receiver = "admin@whatever.com";
+		InternetAddress iaReceiver = new InternetAddress(receiver);
+		mime.setRecipient(Message.RecipientType.TO, iaReceiver);
+		
+		EmailEvent e = new EmailEvent(mime);
+		
+		//assertTrue(e.isSameCompany());
+		
 	}
 	
 	@Test
@@ -114,51 +93,6 @@ public class TestEmailEvents
 		assertEquals(s, event.getSubject());
 		
 	}
-	
-	@Test
-	public void TestGetSenderName()
-	{
-		fail();
-	}
-	
-	@Test
-	public void TestGetReceiverName()
-	{
-		fail();
-	}
-	
-	@Test 
-	public void TestGetCC()
-	{
-		Properties props = new Properties();
-		Session session = Session.getDefaultInstance(props, null);
-		MimeMessage mime = new MimeMessage(session);
-		
-		Address [] cc = new Address[] {InternetAddress.parse("example1@email.com"),
-										InternetAddress.parse("example2@email.com"),
-										InternetAddress.parse("example3@email.com")};
-		
-		mime.setRecipient(Message.RecipientType.CC, cc);
-		EmailEvent event = new EmailEvent(mime);
-		assertEquals(s, event.getCC());
-	}
-	
-	@Test
-	public void TestBCC()
-	{
-		Properties props = new Properties();
-		Session session = Session.getDefaultInstance(props, null);
-		MimeMessage mime = new MimeMessage(session);
-		
-		Address [] bcc = new Address[] {InternetAddress.parse("example1@email.com"),
-										InternetAddress.parse("example2@email.com"),
-										InternetAddress.parse("example3@email.com")};
-		
-		mime.setRecipient(Message.RecipientType.BCC, bcc);
-		EmailEvent event = new EmailEvent(mime);
-		assertEquals(bcc, event.getBCC());
-	}
-	
 	
 	@Test
 	public void TestAttachmentSuccess() throws MessagingException

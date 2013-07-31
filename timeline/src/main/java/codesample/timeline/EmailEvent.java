@@ -1,10 +1,13 @@
 package codesample.timeline;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.mail.Address;
 import javax.mail.Flags.Flag;
 import javax.mail.Message;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.joda.time.DateTime;
 import javax.mail.Flags;
@@ -57,9 +60,9 @@ public class EmailEvent implements Event
 	
 	/** @return An array of addresses belonging to the Sender(s).
 	 * @throws MessagingException */
-	public Address[] getSenderEmail() throws MessagingException
+	public Address getSenderEmail() throws MessagingException
 	{
-		return message.getFrom(); 
+		return message.getSender();
 	}
 	
 	
@@ -70,22 +73,25 @@ public class EmailEvent implements Event
 		return message.getRecipients(Message.RecipientType.TO); 
 	}
 	
-	/*//not necessary yet.
-	*//** @return if both the sender and receiver both have company E-mails.*//*
-	public boolean isSameCompany
-	{
-		//if getSenderEmail().equals(get.ReceiverEmail()
-			return true;
-		//return false;
-	}*/
 	
-	
-	/** @return If the sender and receiver are the same. Essentially, sending an
+	/** @return If the sender and receiver are the same when
+	 * the number of Receivers equal 1. Essentially, sending an
 	 * E-mail to yourself. 
 	 * @throws MessagingException *//*
 	public boolean isToSelf() throws MessagingException
 	{
-		
+		Address sender = getSenderEmail();
+		Address[] receiver = getReceiverEmail();
+		if(receiver.length==1)
+		{
+			for (Address a:receiver)
+			{
+				if(a.equals(sender))
+					return true;
+			}
+			return false;
+		}
+		return false;
 	}*/
 
 	
@@ -97,19 +103,31 @@ public class EmailEvent implements Event
 	}
 	
 	
-	/**@return sender's name ==> there is not a method for this in Mime.Message API. */
-	public String getSenderName()
+	/**@return sender's name ==> there is not a method for this in Mime.Message API. 
+	 * @throws MessagingException */
+	public String getSenderName() throws MessagingException
 	{
+		Address sender = getSenderEmail();
+		if (sender instanceof InternetAddress) {
+			return ((InternetAddress)sender).getPersonal();
+		}
 		return null;
 	}
 	
 	
 	/**@return sender's name ==> before attempting this method make sure 
-	 * that getReceiverEmail() works (look at comment in getReceiver to understand).
-	 */
-	public String getReceiverName()
+	 * that getReceiverEmail() works (look at comment in getReceiver to understand). 
+	 * @throws MessagingException */
+	public String[] getReceiverNames() throws MessagingException
 	{
-		return null;
+		Address[] receivers = getReceiverEmail();
+		String [] names = new String[receivers.length];
+		for (int i=0; i<receivers.length; i++)
+			if (receivers[i] instanceof InternetAddress)
+			{
+				names[i] = (((InternetAddress)receivers[i]).getPersonal());
+			}	
+		return names;
 	}
 	
 	
