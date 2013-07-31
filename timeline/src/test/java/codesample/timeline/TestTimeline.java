@@ -2,7 +2,12 @@ package codesample.timeline;
 
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
+
+import codesample.timeline.util.*;
 
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -741,91 +746,101 @@ public class TestTimeline
 	
 	@Test
 	public void testStartedDuring(){
-		DateTime start = new DateTime(2003,12,25,0,0);
-		DateTime start2 = new DateTime(2004,12,25,0,0);
-		DateTime end = new DateTime(2005,12,25,0,0);
-		DateTime end2 = new DateTime(2008,12,25,0,0);
-		Event a = new NamedEvent("EventA", start);
-		Event b = new NamedEvent("EventB", start,end);
-		Event c = new NamedEvent("EventC", start2,end);
-		Event d = new NamedEvent("EventD", start2,end2);
-		ArrayList<Event> list = new ArrayList<Event>();
-		Collections.addAll(list,a,b,c,d);
-		timeline.addAll(list);
+//		DateTime start = new DateTime(2003,12,25,0,0);
+//		DateTime start2 = new DateTime(2004,12,25,0,0);
+//		DateTime end = new DateTime(2005,12,25,0,0);
+//		DateTime end2 = new DateTime(2008,12,25,0,0);
+//		Event a = new NamedEvent("EventA", start);
+//		Event b = new NamedEvent("EventB", start,end);
+//		Event c = new NamedEvent("EventC", start2,end);
+//		Event d = new NamedEvent("EventD", start2,end2);
+//		ArrayList<Event> list = new ArrayList<Event>();
+//		Collections.addAll(list,a,b,c,d);
+//		timeline.addAll(list);
+//		
+//		System.out.println(timeline);
 		
-		System.out.println(timeline);
-		
-		System.out.println(timeline.startedDuring(new DateTime(2004,12,25,0,0),new DateTime(2008,12,25,0,0)));
+		timeline.addAll(NamedEventGenerator.generate(new DateTime(1993,1,1,0,0), new DateTime(2010,12,30,0,0), (500000), (10), (2), (5), (5), (5)));		
+
+		timeline.startedDuring(new DateTime(2004,12,25,0,0),new DateTime(2008,12,25,0,0));
 	}
 	
 	@Test
 	public void testEndedDuring(){
-		DateTime start = new DateTime(2003,12,25,0,0);
-		DateTime start2 = new DateTime(2004,12,25,0,0);
-		DateTime end = new DateTime(2005,12,25,0,0);
-		DateTime end2 = new DateTime(2008,12,25,0,0);
-		Event a = new NamedEvent("EventA", start);
-		Event b = new NamedEvent("EventB", start,end);
-		Event c = new NamedEvent("EventC", start2,end);
-		Event d = new NamedEvent("EventD", start2,end2);
-		ArrayList<Event> list = new ArrayList<Event>();
-		Collections.addAll(list,a,b,c,d);
-		timeline.addAll(list);
+//		DateTime start = new DateTime(2003,12,25,0,0);
+//		DateTime start2 = new DateTime(2004,12,25,0,0);
+//		DateTime end = new DateTime(2005,12,25,0,0);
+//		DateTime end2 = new DateTime(2008,12,25,0,0);
+//		Event a = new NamedEvent("EventA", start);
+//		Event b = new NamedEvent("EventB", start,end);
+//		Event c = new NamedEvent("EventC", start2,end);
+//		Event d = new NamedEvent("EventD", start2,end2);
+//		ArrayList<Event> list = new ArrayList<Event>();
+//		Collections.addAll(list,a,b,c,d);
+//		timeline.addAll(list);
+//		
+//		System.out.println(timeline);
 		
-		System.out.println(timeline);
-		
+		timeline.addAll(NamedEventGenerator.generate(new DateTime(1993,1,1,0,0), new DateTime(2010,12,30,0,0), (500000), (10), (2), (5), (5), (5)));		
+
 		System.out.println(timeline.endedDuring(new DateTime(2004,12,25,0,0), new DateTime(2007,12,25,0,0)));
 		
 	}
 	
 	@Test
 	public void testOccurredBefore(){
-		DateTime start = new DateTime(2003,12,25,0,0);
-		DateTime start2 = new DateTime(2004,12,25,0,0);
-		DateTime end = new DateTime(2005,12,25,0,0);
-		DateTime end2 = new DateTime(2008,12,25,0,0);
+//		DateTime start = new DateTime(2003,12,25,0,0);
+//		DateTime start2 = new DateTime(2004,12,25,0,0);
+//		DateTime end = new DateTime(2005,12,25,0,0);
+//		DateTime end2 = new DateTime(2008,12,25,0,0);
+//		
+//		DateTime start3 = new DateTime(1999,12,3,0,0);
+//		DateTime end3 = new DateTime(2001,10,12,0,0);
+//		Event a = new NamedEvent("EventA", start);
+//		Event b = new NamedEvent("EventB", start,end);
+//		Event c = new NamedEvent("EventC", start2,end);
+//		Event d = new NamedEvent("EventD", start2,end2);
+//		
+//		Event e = new NamedEvent("EventE", start3,end3);
+//		
+//		ArrayList<Event> list = new ArrayList<Event>();
+//		Collections.addAll(list,a,b,c,d,e);
+//		timeline.addAll(list);
+//		
+//		System.out.println(timeline);
 		
-		DateTime start3 = new DateTime(1999,12,3,0,0);
-		DateTime end3 = new DateTime(2001,10,12,0,0);
-		Event a = new NamedEvent("EventA", start);
-		Event b = new NamedEvent("EventB", start,end);
-		Event c = new NamedEvent("EventC", start2,end);
-		Event d = new NamedEvent("EventD", start2,end2);
-		
-		Event e = new NamedEvent("EventE", start3,end3);
-		
-		ArrayList<Event> list = new ArrayList<Event>();
-		Collections.addAll(list,a,b,c,d,e);
-		timeline.addAll(list);
-		
-		System.out.println(timeline);
+		timeline.addAll(NamedEventGenerator.generate(new DateTime(1993,1,1,0,0), new DateTime(2010,12,30,0,0), (500000), (10), (2), (5), (5), (5)));		
+
 		System.out.println(timeline.occurredBefore(new DateTime(2004,12,25,0,0), new DateTime(2007,12,25,0,0)));
 		
 	}
 	
 	@Test
 	public void testOccurredAfter(){
-		DateTime start = new DateTime(1997,10,25,0,0);
-		DateTime start2 = new DateTime(1999,12,25,0,0);
-		DateTime start3 = new DateTime(2004,12,3,0,0);
-		DateTime start4 = new DateTime(2006,4,5,0,0);
+//		DateTime start = new DateTime(1997,10,25,0,0);
+//		DateTime start2 = new DateTime(1999,12,25,0,0);
+//		DateTime start3 = new DateTime(2004,12,3,0,0);
+//		DateTime start4 = new DateTime(2006,4,5,0,0);
+//		
+//		DateTime end = new DateTime(1999,12,25,0,0);
+//		DateTime end2 = new DateTime(2001,12,25,0,0);
+//		DateTime end3 = new DateTime(2005,10,12,0,0);
+//		DateTime end4 = new DateTime(2009,5,12,0,0);
+//		
+//		Event a = new NamedEvent("EventA", start,end);
+//		Event b = new NamedEvent("EventB", start2,end2);
+//		Event c = new NamedEvent("EventC", start3,end3);
+//		Event d = new NamedEvent("EventD", start4,end4);
+//		
+//		ArrayList<Event> list = new ArrayList<Event>();
+//		Collections.addAll(list,a,b,c,d);
+//		timeline.addAll(list);
+//		
+//		System.out.println(timeline);
 		
-		DateTime end = new DateTime(1999,12,25,0,0);
-		DateTime end2 = new DateTime(2001,12,25,0,0);
-		DateTime end3 = new DateTime(2005,10,12,0,0);
-		DateTime end4 = new DateTime(2009,5,12,0,0);
 		
-		Event a = new NamedEvent("EventA", start,end);
-		Event b = new NamedEvent("EventB", start2,end2);
-		Event c = new NamedEvent("EventC", start3,end3);
-		Event d = new NamedEvent("EventD", start4,end4);
-		
-		ArrayList<Event> list = new ArrayList<Event>();
-		Collections.addAll(list,a,b,c,d);
-		timeline.addAll(list);
-		
-		System.out.println(timeline);
-		
+		timeline.addAll(NamedEventGenerator.generate(new DateTime(1993,1,1,0,0), new DateTime(2010,12,30,0,0), (500000), (10), (2), (5), (5), (5)));		
+
 		System.out.println(timeline.occurredAfter(new DateTime(2000,12,25,0,0), new DateTime(2003,12,25,0,0)));
 		
 	}
@@ -833,26 +848,28 @@ public class TestTimeline
 	@Test 
 	public void testOccurredDuring(){
 		
-		DateTime start = new DateTime(1997,10,25,0,0);
-		DateTime start2 = new DateTime(1999,12,25,0,0);
-		DateTime start3 = new DateTime(2001,12,3,0,0);
-		DateTime start4 = new DateTime(2002,4,5,0,0);
+//		DateTime start = new DateTime(1997,10,25,0,0);
+//		DateTime start2 = new DateTime(1999,12,25,0,0);
+//		DateTime start3 = new DateTime(2001,12,3,0,0);
+//		DateTime start4 = new DateTime(2002,4,5,0,0);
+//		
+//		DateTime end = new DateTime(1999,12,25,0,0);
+//		DateTime end2 = new DateTime(2001,12,25,0,0);
+//		DateTime end3 = new DateTime(2002,10,12,0,0);
+//		DateTime end4 = new DateTime(2009,5,12,0,0);
+//		
+//		Event a = new NamedEvent("EventA", start,end);
+//		Event b = new NamedEvent("EventB", start2,end2);
+//		Event c = new NamedEvent("EventC", start3,end3); // Occurred during query
+//		Event d = new NamedEvent("EventD", start4,end4);
+//		
+//		ArrayList<Event> list = new ArrayList<Event>();
+//		Collections.addAll(list,a,b,c,d);
+//		timeline.addAll(list);
 		
-		DateTime end = new DateTime(1999,12,25,0,0);
-		DateTime end2 = new DateTime(2001,12,25,0,0);
-		DateTime end3 = new DateTime(2002,10,12,0,0);
-		DateTime end4 = new DateTime(2009,5,12,0,0);
+//		System.out.println(timeline);
 		
-		Event a = new NamedEvent("EventA", start,end);
-		Event b = new NamedEvent("EventB", start2,end2);
-		Event c = new NamedEvent("EventC", start3,end3); // Occurred during query
-		Event d = new NamedEvent("EventD", start4,end4);
-		
-		ArrayList<Event> list = new ArrayList<Event>();
-		Collections.addAll(list,a,b,c,d);
-		timeline.addAll(list);
-		
-		System.out.println(timeline);
+		timeline.addAll(NamedEventGenerator.generate(new DateTime(1993,1,1,0,0), new DateTime(2010,12,30,0,0), (100), (10), (2), (5), (5), (5)));		
 		
 		System.out.println(timeline.occurredDuring(new DateTime(2000,12,25,0,0), new DateTime(2003,12,25,0,0)));
 		
@@ -881,81 +898,101 @@ public class TestTimeline
 	
 	@Test
 	public void testIfAnyPartOfEventIsInQuery(){
-		DateTime start = new DateTime(1997,10,25,0,0);
-		DateTime start2 = new DateTime(1999,12,25,0,0);
-		DateTime start3 = new DateTime(2001,12,3,0,0);
-		DateTime start4 = new DateTime(2002,4,5,0,0);
-		DateTime start5 = new DateTime(2005,5,12,0,0);
-		DateTime start6 = new DateTime(1995,10,17,0,0);
-		DateTime start7 = new DateTime(2000,12,25,0,0);
+//		DateTime start = new DateTime(1997,10,25,0,0);
+//		DateTime start2 = new DateTime(1999,12,25,0,0);
+//		DateTime start3 = new DateTime(2001,12,3,0,0);
+//		DateTime start4 = new DateTime(2002,4,5,0,0);
+//		DateTime start5 = new DateTime(2005,5,12,0,0);
+//		DateTime start6 = new DateTime(1995,10,17,0,0);
+//		DateTime start7 = new DateTime(2000,12,25,0,0);
+//		
+//		DateTime end = new DateTime(1999,12,25,0,0);
+//		DateTime end2 = new DateTime(2001,12,25,0,0);
+//		DateTime end3 = new DateTime(2002,10,12,0,0);
+//		DateTime end4 = new DateTime(2004,5,12,0,0);
+//		DateTime end5 = new DateTime(2007,3,12,0,0);
+//		DateTime end6 = new DateTime(2010,4,15,0,0);
+//		DateTime end7 = new DateTime(2003,12,25,0,0);
+//		
+//		Event a = new NamedEvent("EventA", start,end);
+//		Event b = new NamedEvent("EventB", start2,end2); // included
+//		Event c = new NamedEvent("EventC", start3,end3); // included
+//		Event d = new NamedEvent("EventD", start4,end4); // included
+//		Event e = new NamedEvent("EventE", start5, end5);
+//		Event f = new NamedEvent("EventF", start6, end6); // included
+//		Event g = new NamedEvent("EventG", start7, end7); // included
+//		ArrayList<Event> list = new ArrayList<Event>();
+//		Collections.addAll(list,a,b,c,d,e,f,g);
+//		timeline.addAll(list);
 		
-		DateTime end = new DateTime(1999,12,25,0,0);
-		DateTime end2 = new DateTime(2001,12,25,0,0);
-		DateTime end3 = new DateTime(2002,10,12,0,0);
-		DateTime end4 = new DateTime(2004,5,12,0,0);
-		DateTime end5 = new DateTime(2007,3,12,0,0);
-		DateTime end6 = new DateTime(2010,4,15,0,0);
-		DateTime end7 = new DateTime(2003,12,25,0,0);
-		
-		Event a = new NamedEvent("EventA", start,end);
-		Event b = new NamedEvent("EventB", start2,end2); // included
-		Event c = new NamedEvent("EventC", start3,end3); // included
-		Event d = new NamedEvent("EventD", start4,end4); // included
-		Event e = new NamedEvent("EventE", start5, end5);
-		Event f = new NamedEvent("EventF", start6, end6); // included
-		Event g = new NamedEvent("EventG", start7, end7); // included
-		
-		
-		ArrayList<Event> list = new ArrayList<Event>();
-		Collections.addAll(list,a,b,c,d,e,f,g);
-		timeline.addAll(list);
-		
-		System.out.println(timeline);
-	
-		System.out.println(timeline.includedInQuery(new DateTime(2000,12,25,0,0), new DateTime(2003,12,25,0,0)));
+		timeline.addAll(NamedEventGenerator.generate(new DateTime(1993,1,1,0,0), new DateTime(2010,12,30,0,0), (3000000), (10), (2), (5), (5), (5)));
+//		System.out.println(timeline);
+//		System.out.println("Query: \n");
+//		
+//		try {
+//			PrintWriter writer = new PrintWriter("test.txt","UTF-8");
+//			writer.println((timeline.occurredDuring(new DateTime(2000,12,25,0,0), new DateTime(2003,12,25,0,0))));
+//			writer.close();
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
+		timeline.includedInQuery(new DateTime(2000,1,1,0,0), new DateTime(2003,12,25,0,0));
+//		System.out.println(timeline.includedInQuery(new DateTime(2000,1,1,0,0), new DateTime(2003,12,25,0,0)));
 	}
 	
 	@Test
 	public void testOverlapsQuery(){
-		DateTime start = new DateTime(1998,12,25,0,0);
-		DateTime start2 = new DateTime(2004,12,25,0,0);
-		DateTime end = new DateTime(2012,12,25,0,0);
-		DateTime end2 = new DateTime(2008,12,25,0,0);
+//		DateTime start = new DateTime(1998,12,25,0,0);
+//		DateTime start2 = new DateTime(2004,12,25,0,0);
+//		DateTime end = new DateTime(2012,12,25,0,0);
+//		DateTime end2 = new DateTime(2008,12,25,0,0);
+//		
+//		Event a = new NamedEvent("EventA", start);
+//		Event b = new NamedEvent("EventB", start,end); // overlaps
+//		Event c = new NamedEvent("EventC", start2,end);
+//		Event d = new NamedEvent("EventD", start2,end2);
+//		ArrayList<Event> list = new ArrayList<Event>();
+//		Collections.addAll(list,a,b,c,d);
+//		timeline.addAll(list);
+//		System.out.println(timeline);
 		
-		Event a = new NamedEvent("EventA", start);
-		Event b = new NamedEvent("EventB", start,end); // overlaps
-		Event c = new NamedEvent("EventC", start2,end);
-		Event d = new NamedEvent("EventD", start2,end2);
-		ArrayList<Event> list = new ArrayList<Event>();
-		Collections.addAll(list,a,b,c,d);
-		timeline.addAll(list);
-		System.out.println(timeline);
-	
-		System.out.println(timeline.overlapsQuery(new DateTime(2003,12,25,0,0), new DateTime(2005,12,25,0,0)));
+		timeline.addAll(NamedEventGenerator.generate(new DateTime(1993,1,1,0,0), new DateTime(2010,12,30,0,0), (1000000), (2), (2), (100), (100), (100)));
+//		System.out.println(timeline);
+		System.out.println(timeline.overlapsQuery(new DateTime(2003,12,25,0,0), new DateTime(2003,12,25,0,0)));
 
 	}
 	
 	@Test
 	public void testSame(){
-		DateTime start = new DateTime(2003,12,25,0,0);
-		DateTime start2 = new DateTime(2004,12,25,0,0);
-		DateTime end = new DateTime(2005,12,25,0,0);
-		DateTime end2 = new DateTime(2008,12,25,0,0);
 		
-		DateTime start3 = new DateTime(1999,12,3,0,0);
-		DateTime end3 = new DateTime(2001,10,12,0,0);
-		Event a = new NamedEvent("EventA", start);
-		Event b = new NamedEvent("EventB", start,end); // same as
-		Event c = new NamedEvent("EventC", start,end); // same as
-		Event d = new NamedEvent("EventD", start2,end2);
+//		NamedEventGenerator g = new NamedEventGenerator();
 		
-		Event e = new NamedEvent("EventE", start3,end3);
 		
-		ArrayList<Event> list = new ArrayList<Event>();
-		Collections.addAll(list,a,b,c,d,e);
-		timeline.addAll(list);
+//		DateTime start = new DateTime(2003,12,25,0,0);
+//		DateTime start2 = new DateTime(2004,12,25,0,0);
+//		DateTime end = new DateTime(2005,12,25,0,0);
+//		DateTime end2 = new DateTime(2008,12,25,0,0);
+//		
+//		DateTime start3 = new DateTime(1999,12,3,0,0);
+//		DateTime end3 = new DateTime(2001,10,12,0,0);
+//		Event a = new NamedEvent("EventA", start);
+//		Event b = new NamedEvent("EventB", start,end); // same as
+//		Event c = new NamedEvent("EventC", start,end); // same as
+//		Event d = new NamedEvent("EventD", start2,end2);
+//		
+//		Event e = new NamedEvent("EventE", start3,end3);
+//		
+//		ArrayList<Event> list = new ArrayList<Event>();
+//		Collections.addAll(list,a,b,c,d,e);
+//		timeline.addAll(list);l
+		
+		timeline.addAll(NamedEventGenerator.generate(new DateTime(1993,1,1,0,0), new DateTime(2010,12,30,0,0), (500000), (10), (2), (5), (5), (5)));
 		
 		System.out.println(timeline.same(new DateTime(2003,12,25,0,0), new DateTime(2005,12,25,0,0)));
-		
 	}
 }

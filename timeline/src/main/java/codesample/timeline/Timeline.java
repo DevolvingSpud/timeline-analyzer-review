@@ -12,16 +12,57 @@ public class Timeline implements Collection<Event>
 {
 //	public static final DateTimeFormatter fmt = DateTimeFormat.forPattern("mm/dd/yyyy  kk:mm"); //"month/day/year  24hour:minutes of the hour"
 	
-	private enum timelineType {YEARS,DAYS,HOURS,MINUTES,SECONDS,MILLISECONDS};
+	private enum timelineType {YEARS,MONTHS,DAYS,HOURS,MINUTES,SECONDS,MILLISECONDS};
 	
 	private TreeMap<DateTime, HashSet<Event>> startTimeEventMap = new TreeMap<DateTime, HashSet<Event>>();
 	private TreeMap<DateTime, HashSet<Event>> endTimeEventMap = new TreeMap<DateTime, HashSet<Event>>();
 	
+//	public Timeline(timelineType type)
+//	{
+//		if(type.equals(timelineType.YEARS))
+//		{
+//
+//		}
+//		
+//		if(type.equals(timelineType.MONTHS))
+//		{
+//			
+//		}
+//		
+//		if(type.equals(timelineType.DAYS))
+//		{
+//			
+//		}
+//		
+//		if(type.equals(timelineType.HOURS))
+//		{
+//			
+//		}
+//		
+//		if(type.equals(timelineType.MINUTES))
+//		{
+//			
+//		}
+//		
+//		if(type.equals(timelineType.SECONDS))
+//		{
+//			
+//		}
+//		
+//		if(type.equals(timelineType.MILLISECONDS))
+//		{
+//			
+//		}
+//	}
+//	
+	
+
 	public boolean add(Event e) {
 		addEndTime(endTimeEventMap,e);
 		return addStartTime(startTimeEventMap,e);
 	}
 	
+		
 	/* (non-Javadoc)
 	 * @see java.util.Collection#addAll(java.util.Collection)
 	 */
@@ -570,57 +611,66 @@ public class Timeline implements Collection<Event>
         }
     }
     
-    /**
-     * *
-     * Query methods
+   /**
      * 
-     * 
+     * Returns a Timeline of events that have started during the given query
+     * @param startTime
+     * @param endTime
+     * @return Timeline 
      */
-    
-    public TreeMap<DateTime, HashSet<Event>> startedDuring(DateTime startTime, DateTime endTime)
+    public Timeline startedDuring(DateTime startTime, DateTime endTime)
     {
-		TreeMap<DateTime, HashSet<Event>> newStartEventMap = new TreeMap<DateTime, HashSet<Event>>();
-
-		for(DateTime key: startTimeEventMap.keySet())
-		{
-			for(Event e: startTimeEventMap.get(key))
-			{	
-				if (key.equals(startTime))
-				{
-					addStartTime(newStartEventMap,e);
-				}
+    	Timeline startedDuringTimeline = new Timeline();
+    	
+		for(Event e: this)
+		{	
+			if (e.getStart().equals(startTime))
+			{
+				startedDuringTimeline.add(e);
+			}
 				
-				if (key.isAfter(startTime) && key.isBefore(endTime))
-				{
-					addStartTime(newStartEventMap,e);
-				}
+			if (e.getStart().isAfter(startTime) && e.getStart().isBefore(endTime))
+			{
+				startedDuringTimeline.add(e);
 			}
 		}
-		return newStartEventMap;
-    }
-    
-    public TreeMap<DateTime, HashSet<Event>> endedDuring(DateTime startTime, DateTime endTime)
-    {
-    	TreeMap<DateTime, HashSet<Event>> newEndEventMap = new TreeMap<DateTime, HashSet<Event>>();
+		return startedDuringTimeline;
 
-		for(DateTime key: endTimeEventMap.keySet())
-		{
-			for(Event e: endTimeEventMap.get(key))
-			{	
-				if (key.equals(endTime))
-				{
-					addStartTime(newEndEventMap,e);
-				}
-				
-				if (key.isAfter(endTime) && key.isBefore(endTime))
-				{
-					addStartTime(newEndEventMap,e);
-				}
-			}
-		}
-		return newEndEventMap;
     }
     
+    /**
+     * Returns a Timeline of events that have ended during the given query
+     * @param startTime
+     * @param endTime
+     * @return Timeline
+     */
+    public Timeline endedDuring(DateTime startTime, DateTime endTime)
+    {
+  	
+    	Timeline endedDuringTimeline = new Timeline();
+    	
+    	for(Event e: this)
+    	{
+    		if(e.getEnd().equals(endTime))
+    		{
+    			endedDuringTimeline.add(e);
+    		}
+    		
+    		if(e.getEnd().isAfter(startTime) && e.getEnd().isBefore(endTime))
+    		{
+    			endedDuringTimeline.add(e);
+    		}
+    	}
+	
+		return endedDuringTimeline;
+    }
+    
+    /**
+     * Returns a Timeline of events that have occurred before the given query
+     * @param startTime
+     * @param endTime
+     * @return Timeline
+     */
     public Timeline occurredBefore(DateTime startTime, DateTime endTime)
     {	
     	Timeline occurredBeforeTimeline = new Timeline();
@@ -636,6 +686,12 @@ public class Timeline implements Collection<Event>
 		return occurredBeforeTimeline;
     }
     
+    /**
+     * Returns a Timeline of events that have occurred after the given query
+     * @param startTime
+     * @param endTime
+     * @return Timeline
+     */
     public Timeline occurredAfter(DateTime startTime, DateTime endTime)
     {
 
@@ -652,6 +708,12 @@ public class Timeline implements Collection<Event>
 		return occurredAfterTimeline;
     }
     
+    /**
+     * Returns a Timeline of events that have occurred after the given query
+     * @param startTime
+     * @param endTime
+     * @return Timeline
+     */
     public Timeline occurredDuring(DateTime startTime, DateTime endTime)
     {
     	Timeline duringTimeline = new Timeline();
@@ -671,6 +733,12 @@ public class Timeline implements Collection<Event>
     	return duringTimeline;
     }
     
+    /**
+     * Returns a Timeline of events that either started before and ended during the query or started during and ended after the query
+     * @param startTime
+     * @param endTime
+     * @return Timeline
+     */
     public Timeline partiallyContained(DateTime startTime, DateTime endTime)
     {
     	Timeline partialTimeline = new Timeline();
@@ -691,12 +759,38 @@ public class Timeline implements Collection<Event>
     	return partialTimeline;
     }
     
+    /**
+     * Returns a timeline of events that have any relevance to the given query
+     * @param startTime
+     * @param endTime
+     * @return Timeline
+     */
     public Timeline includedInQuery(DateTime startTime, DateTime endTime)
     {
     	Timeline includedTimeline = new Timeline();
     	
     	for (Event e: this)
     	{
+    		if (e.getStart().equals(startTime))
+			{
+				includedTimeline.add(e);
+			}
+			
+			if (e.getStart().isAfter(startTime) && e.getStart().isBefore(endTime))
+			{
+				includedTimeline.add(e);
+			}
+			
+			if (e.getEnd().equals(endTime))
+			{
+				includedTimeline.add(e);
+			}
+			
+			if (e.getEnd().isAfter(endTime) && e.getEnd().isBefore(endTime))
+			{
+				includedTimeline.add(e);
+			}
+			
     		if (e.getStart().isBefore(startTime) && e.getEnd().isAfter(endTime))
     		{
     			includedTimeline.add(e);
@@ -725,6 +819,12 @@ public class Timeline implements Collection<Event>
     	return includedTimeline;
     }
     
+    /**
+     * Returns a Timeline of events that start before and end after the query
+     * @param startTime
+     * @param endTime
+     * @return Timeline
+     */
     public Timeline overlapsQuery(DateTime startTime, DateTime endTime)
     {
     	Timeline overlapsTimeline = new Timeline();
@@ -740,6 +840,12 @@ public class Timeline implements Collection<Event>
     	return overlapsTimeline;
     }
     
+    /**
+     * Returns a Timeline of events that occured the same time as the query
+     * @param startTime
+     * @param endTime
+     * @return Timeline
+     */
     public Timeline same(DateTime startTime, DateTime endTime)
     {
     	Timeline sameTimeline = new Timeline();
@@ -753,5 +859,43 @@ public class Timeline implements Collection<Event>
     	}
 
     	return sameTimeline;
+    }
+    
+    /**
+     * Returns a start time event map of events that started on the given query time
+     * @param time
+     * @return startTimeEventMap
+     */
+    public TreeMap<DateTime, HashSet<Event>> startedOn(DateTime time)
+    {
+    	TreeMap<DateTime, HashSet<Event>> startedOnMap = new TreeMap<DateTime, HashSet<Event>>();
+    	
+    	for(Event e: this)
+    	{
+    		if (e.getStart().equals(time))
+    		{
+    			addStartTime(startedOnMap,e);
+    		}
+    	}
+    	return startedOnMap;
+    }
+    
+    /**
+     * Returns a end time event map of events that ended on the given query time
+     * @param time
+     * @return endTimeEventMap
+     */
+    public TreeMap<DateTime, HashSet<Event>> endedOn(DateTime time)
+    {
+    	TreeMap<DateTime, HashSet<Event>> endedOnMap = new TreeMap<DateTime, HashSet<Event>>();
+    	
+    	for(Event e: this)
+    	{
+    		if (e.getEnd().equals(time))
+    		{
+    			addEndTime(endedOnMap,e);
+    		}
+    	}
+    	return endedOnMap;
     }
 }
