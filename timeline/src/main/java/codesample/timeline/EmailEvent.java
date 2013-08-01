@@ -103,7 +103,7 @@ public class EmailEvent implements Event
 	}
 	
 	
-	/**@return sender's name ==> there is not a method for this in Mime.Message API. 
+	/**@return String of the sender's name. 
 	 * @throws MessagingException */
 	public String getSenderName() throws MessagingException
 	{
@@ -115,8 +115,7 @@ public class EmailEvent implements Event
 	}
 	
 	
-	/**@return sender's name ==> before attempting this method make sure 
-	 * that getReceiverEmail() works (look at comment in getReceiver to understand). 
+	/**@return Array of Strings in which contain all of the receiver's names.
 	 * @throws MessagingException */
 	public String[] getReceiverNames() throws MessagingException
 	{
@@ -131,6 +130,13 @@ public class EmailEvent implements Event
 	}
 	
 	
+	@Override
+	public String toString() 
+	{
+		return "EmailEvent [startDate=" + startDate + ", message=" + message+ "]";
+	}
+
+
 	/** @return array of carbon-copy (Cc) recipient's E-mail addresses.
 	 * @throws MessagingException */
 	public Address[] getCC() throws MessagingException

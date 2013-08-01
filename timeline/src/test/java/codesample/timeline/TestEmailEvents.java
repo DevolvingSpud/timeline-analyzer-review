@@ -1,15 +1,20 @@
 package codesample.timeline;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 
 import javax.mail.Address;
 import javax.mail.Message;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
@@ -54,6 +59,59 @@ public class TestEmailEvents
 			assertEquals(receiver, a.toString());
 		}
 	}
+	
+	@Test
+	public void TestGetSenderName() throws UnsupportedEncodingException, MessagingException
+	{
+		Properties props = new Properties();
+		Session session = Session.getDefaultInstance(props, null);
+		MimeMessage mime = new MimeMessage(session);
+		
+		String from = "myEmail@whatever.com";
+		String fromName = "Macon";
+		InternetAddress iaSender = new InternetAddress(from, fromName);
+		mime.setSender(iaSender);
+		EmailEvent e = new EmailEvent(mime);
+		
+		assertEquals(fromName, e.getSenderName());
+	}
+	
+	@Test
+	public void TestGetReceiverNames() throws UnsupportedEncodingException, MessagingException
+	{
+		Properties props = new Properties();
+		Session session = Session.getDefaultInstance(props, null);
+		MimeMessage mime = new MimeMessage(session);
+		
+		String to1 = "to1Email@whatever.com";
+		String to2 = "to2Email@whatever.com";
+		String to3 = "to3Email@whatever.com";
+		String to4 = "to4Email@whatever.com";
+		String to1Name = "Jack";
+		String to2Name = "Michael";
+		String to3Name = "Andrew";
+		String to4Name = "Mike";
+		InternetAddress iaTo1 = new InternetAddress(to1, to1Name);
+		InternetAddress iaTo2 = new InternetAddress(to2, to2Name);
+		InternetAddress iaTo3 = new InternetAddress(to3, to3Name);
+		InternetAddress iaTo4 = new InternetAddress(to4, to4Name);
+		
+		String myNames[] = {to1Name, to2Name,to3Name,to4Name};
+		Arrays.sort(myNames);
+		
+		mime.addRecipient(MimeMessage.RecipientType.TO, iaTo1);
+		mime.addRecipient(MimeMessage.RecipientType.TO, iaTo2);
+		mime.addRecipient(MimeMessage.RecipientType.TO, iaTo3);
+		mime.addRecipient(MimeMessage.RecipientType.TO, iaTo4);
+		
+		EmailEvent e = new EmailEvent(mime);
+		String receiveNames[] = e.getReceiverNames();
+		Arrays.sort(receiveNames);
+		
+		assertArrayEquals(receiveNames, myNames);
+	}
+	
+	
 	@Test
 	public void TestIsToSelf() throws MessagingException
 	{
@@ -75,12 +133,12 @@ public class TestEmailEvents
 		
 	}
 	
-	@Test
-	public void TestIsBothFromCo()
-	{
-		fail();
-	}
-	
+//	@Test
+//	public void TestIsBothFromCo()
+//	{
+//		fail();
+//	}
+//	
 	@Test 
 	public void TestGetSubject() throws MessagingException
 	{
