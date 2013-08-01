@@ -17,46 +17,6 @@ public class Timeline implements Collection<Event>
 	private TreeMap<DateTime, HashSet<Event>> startTimeEventMap = new TreeMap<DateTime, HashSet<Event>>();
 	private TreeMap<DateTime, HashSet<Event>> endTimeEventMap = new TreeMap<DateTime, HashSet<Event>>();
 	
-//	public Timeline(timelineType type)
-//	{
-//		if(type.equals(timelineType.YEARS))
-//		{
-//
-//		}
-//		
-//		if(type.equals(timelineType.MONTHS))
-//		{
-//			
-//		}
-//		
-//		if(type.equals(timelineType.DAYS))
-//		{
-//			
-//		}
-//		
-//		if(type.equals(timelineType.HOURS))
-//		{
-//			
-//		}
-//		
-//		if(type.equals(timelineType.MINUTES))
-//		{
-//			
-//		}
-//		
-//		if(type.equals(timelineType.SECONDS))
-//		{
-//			
-//		}
-//		
-//		if(type.equals(timelineType.MILLISECONDS))
-//		{
-//			
-//		}
-//	}
-//	
-	
-
 	public boolean add(Event e) {
 		addEndTime(endTimeEventMap,e);
 		return addStartTime(startTimeEventMap,e);
