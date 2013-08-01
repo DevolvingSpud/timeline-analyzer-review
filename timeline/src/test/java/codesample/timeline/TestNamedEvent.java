@@ -1,11 +1,17 @@
 package codesample.timeline;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import codesample.timeline.util.NamedEventGenerator;
 
 public class TestNamedEvent {
 
@@ -88,6 +94,15 @@ public class TestNamedEvent {
 		assertTrue(event1.compareTo(event2) < 0);
 		assertTrue(event2.compareTo(event1) > 0);
 
+	}
+	
+	@Test
+	public void testGenerator() {
+		List<NamedEvent> generatedEvents = NamedEventGenerator.generate(new DateTime(2013, 02, 13, 12, 00), 100);
+		Collections.sort(generatedEvents);
+		for (Event ev : generatedEvents) {
+			System.out.println(ev+": "+ev.getStart()+" to "+ev.getEnd());
+		}
 	}
 	
 }
