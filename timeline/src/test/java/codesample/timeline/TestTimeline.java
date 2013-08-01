@@ -2,7 +2,12 @@ package codesample.timeline;
 
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
+
+import codesample.timeline.util.*;
 
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -57,16 +62,38 @@ public class TestTimeline
 		assertTrue(timeline.add(e3));
 		assertTrue(timeline.add(e4));
 		assertTrue(timeline.add(e5));
-//		System.out.println(timeline);
+		System.out.println(timeline);
+	}
+	
+	@Test
+	public void testAddEndTime(){
+		DateTime startTime = new DateTime(2003,12,23,0,0);
+		DateTime endTime = new DateTime(2004,1,11,0,0);
+		DateTime startTime2 = new DateTime(2001,3,12,0,0);
+		
+		Event a = new NamedEvent("Developed game", startTime,endTime);
+		Event b = new NamedEvent("Worked at Raytheon", startTime2,endTime);
+		Event c = new NamedEvent("Email content", startTime);
+		
+		assertTrue(timeline.add(a));
+		assertTrue(timeline.add(b));
+		assertTrue(timeline.add(c));
+		System.out.println(timeline);
 	}
 	
 	@Test
 	public void testAddAll(){
 		DateTime start = new DateTime(2004,12,25,0,0);
 		DateTime start2 = new DateTime(2003,04,25,0,0);
+		DateTime endTime = new DateTime(2007,1,11,0,0);
+
 		Event a = new NamedEvent("EventA", start);
 		Event b = new NamedEvent("EventB", start);
-		Event c = new NamedEvent("EventC", start2);
+		Event c = new NamedEvent("EventC", start,endTime);
+		Event d = new NamedEvent("EventD", start2,endTime);
+		
+		timeline.add(d);
+		System.out.println(timeline);
 		
 		ArrayList<Event> list = new ArrayList<Event>();
 //		list.add(a);
@@ -75,8 +102,7 @@ public class TestTimeline
 		Collections.addAll(list,a,b,c);
 		
 		assertTrue(timeline.addAll(list));
-		
-//		assertTrue(eventMap.contains(b));
+		System.out.println(timeline);
 	}
 	
 	@Test
@@ -111,11 +137,11 @@ public class TestTimeline
 	public void testContainsAll(){
 		DateTime start = new DateTime(2004,12,25,0,0);
 		DateTime time = new DateTime(2003,11,25,0,0);
-		DateTime time2 = new DateTime(2001,10,25,0,0);
+		DateTime time2 = new DateTime(2007,10,25,0,0);
 		
 		Event a = new NamedEvent("EventA", time);
 		Event b = new NamedEvent("EventB", start);
-		Event c = new NamedEvent("EventC", start);
+		Event c = new NamedEvent("EventC", start,time2);
 		
 		timeline.add(a);
 		timeline.add(b);
@@ -140,16 +166,24 @@ public class TestTimeline
 		
 		DateTime start = new DateTime(2004,12,25,0,0);
 		DateTime time = new DateTime(2003,12,25,0,0);
-		
-		Event e = new NamedEvent("Event", start);
-		Event a = new NamedEvent("EventA", time);
+		DateTime endTime = new DateTime(2007,1,11,0,0);
+
+		Event e = new NamedEvent("EventE", time,endTime);
+		Event a = new NamedEvent("EventA", start);
+		Event b = new NamedEvent("EventB", start,endTime);
 		
 		assertTrue(timeline.add(e));
-//		assertTrue(eventMap.add(a));
-		assertTrue(timeline.remove(e));
-		assertTrue(timeline.isEmpty());
+		assertTrue(timeline.add(a));
+		assertTrue(timeline.add(b));
 		
-//		assertTrue(eventMap.remove(a));
+		System.out.println(timeline);
+		timeline.remove(a);
+		System.out.println(timeline);
+		timeline.remove(b);
+		System.out.println(timeline);
+		timeline.remove(e);
+		System.out.println(timeline);
+		
 //		assertTrue(eventMap.contains(a));
 	}
 	
@@ -171,8 +205,10 @@ public class TestTimeline
 		assertTrue(timeline.add(e));
 		assertTrue(timeline.add(a));
 		assertTrue(timeline.add(c));
+		System.out.println(timeline);
 		assertTrue(timeline.removeAll(list));
 		
+		System.out.println(timeline);
 //		assertFalse(eventMap.contains(c));
 //		assertTrue(eventMap.isEmpty());
 		
@@ -183,9 +219,10 @@ public class TestTimeline
 		DateTime start = new DateTime(2004,12,25,0,0);
 		DateTime time = new DateTime(2003,12,25,0,0);
 		DateTime time2 = new DateTime(2003,9,25,0,0);
+		DateTime endTime = new DateTime(2009, 10,5,11,0,0);
 		
 		Event a = new NamedEvent("EventE", start);
-		Event b = new NamedEvent("EventA", time);
+		Event b = new NamedEvent("EventA", time,endTime);
 		Event c = new NamedEvent("EventC", time);
 		Event d = new NamedEvent("EventD", time2);
 	
@@ -198,7 +235,7 @@ public class TestTimeline
 		assertTrue(timeline.add(a));
 		assertTrue(timeline.add(b));
 		assertTrue(timeline.add(c));
-		
+		System.out.println(timeline);
 		assertEquals(3,timeline.size());
 			
 		assertTrue(timeline.retainAll(list));
@@ -207,6 +244,8 @@ public class TestTimeline
 		assertTrue(timeline.contains(a));
 		assertTrue(timeline.contains(b));
 		assertFalse(timeline.contains(c));
+		
+		System.out.println(timeline);
 	}
 	
 	@Test
@@ -239,7 +278,7 @@ public class TestTimeline
 		timeline.add(c);
 		
 //		System.out.println(timeline.toArray());
-//		System.out.println(java.util.Arrays.toString(timeline.toArray()));
+		System.out.println(java.util.Arrays.toString(timeline.toArray()));
 //		System.out.print(timeline.what());
 	}
 	
@@ -696,12 +735,235 @@ public class TestTimeline
 		
 		while(i.hasNext())
 		{
-			i.next();
+			i.next();		
 		}
-		
+//		System.out.println("At position " + i.nextIndex() + " is: " +i.next());
 		while (i.hasPrevious())
 		{
 			System.out.println("At position " + i.previousIndex() + " is: " +i.previous());
 		}
+	}
+	
+	@Test
+	public void testStartedDuring(){
+		DateTime start = new DateTime(2003,12,25,0,0);
+		DateTime start2 = new DateTime(2004,12,25,0,0);
+		DateTime end = new DateTime(2005,12,25,0,0);
+		DateTime end2 = new DateTime(2008,12,25,0,0);
+		Event a = new NamedEvent("EventA", start);
+		Event b = new NamedEvent("EventB", start,end);
+		Event c = new NamedEvent("EventC", start2,end);
+		Event d = new NamedEvent("EventD", start2,end2);
+		ArrayList<Event> list = new ArrayList<Event>();
+		Collections.addAll(list,a,b,c,d);
+		timeline.addAll(list);
+		
+		System.out.println(timeline);
+		
+		timeline.startedDuring(new DateTime(2004,12,25,0,0),new DateTime(2008,12,25,0,0));
+	}
+	
+	@Test
+	public void testEndedDuring(){
+		DateTime start = new DateTime(2003,12,25,0,0);
+		DateTime start2 = new DateTime(2004,12,25,0,0);
+		DateTime end = new DateTime(2005,12,25,0,0);
+		DateTime end2 = new DateTime(2008,12,25,0,0);
+		Event a = new NamedEvent("EventA", start);
+		Event b = new NamedEvent("EventB", start,end);
+		Event c = new NamedEvent("EventC", start2,end);
+		Event d = new NamedEvent("EventD", start2,end2);
+		ArrayList<Event> list = new ArrayList<Event>();
+		Collections.addAll(list,a,b,c,d);
+		timeline.addAll(list);
+		
+		System.out.println(timeline);
+		
+		System.out.println(timeline.endedDuring(new DateTime(2004,12,25,0,0), new DateTime(2007,12,25,0,0)));
+		
+	}
+	
+	@Test
+	public void testOccurredBefore(){
+		DateTime start = new DateTime(2003,12,25,0,0);
+		DateTime start2 = new DateTime(2004,12,25,0,0);
+		DateTime end = new DateTime(2005,12,25,0,0);
+		DateTime end2 = new DateTime(2008,12,25,0,0);
+		
+		DateTime start3 = new DateTime(1999,12,3,0,0);
+		DateTime end3 = new DateTime(2001,10,12,0,0);
+		Event a = new NamedEvent("EventA", start);
+		Event b = new NamedEvent("EventB", start,end);
+		Event c = new NamedEvent("EventC", start2,end);
+		Event d = new NamedEvent("EventD", start2,end2);
+		
+		Event e = new NamedEvent("EventE", start3,end3);
+		
+		ArrayList<Event> list = new ArrayList<Event>();
+		Collections.addAll(list,a,b,c,d,e);
+		timeline.addAll(list);
+		
+		System.out.println(timeline);
+		
+
+		System.out.println(timeline.occurredBefore(new DateTime(2004,12,25,0,0), new DateTime(2007,12,25,0,0)));
+		
+	}
+	
+	@Test
+	public void testOccurredAfter(){
+		DateTime start = new DateTime(1997,10,25,0,0);
+		DateTime start2 = new DateTime(1999,12,25,0,0);
+		DateTime start3 = new DateTime(2004,12,3,0,0);
+		DateTime start4 = new DateTime(2006,4,5,0,0);
+		
+		DateTime end = new DateTime(1999,12,25,0,0);
+		DateTime end2 = new DateTime(2001,12,25,0,0);
+		DateTime end3 = new DateTime(2005,10,12,0,0);
+		DateTime end4 = new DateTime(2009,5,12,0,0);
+		
+		Event a = new NamedEvent("EventA", start,end);
+		Event b = new NamedEvent("EventB", start2,end2);
+		Event c = new NamedEvent("EventC", start3,end3);
+		Event d = new NamedEvent("EventD", start4,end4);
+		
+		ArrayList<Event> list = new ArrayList<Event>();
+		Collections.addAll(list,a,b,c,d);
+		timeline.addAll(list);
+		
+		System.out.println(timeline);
+		
+		
+		System.out.println(timeline.occurredAfter(new DateTime(2000,12,25,0,0), new DateTime(2003,12,25,0,0)));
+		
+	}
+	
+	@Test 
+	public void testOccurredDuring(){
+		
+		DateTime start = new DateTime(1997,10,25,0,0);
+		DateTime start2 = new DateTime(1999,12,25,0,0);
+		DateTime start3 = new DateTime(2001,12,3,0,0);
+		DateTime start4 = new DateTime(2002,4,5,0,0);
+		
+		DateTime end = new DateTime(1999,12,25,0,0);
+		DateTime end2 = new DateTime(2001,12,25,0,0);
+		DateTime end3 = new DateTime(2002,10,12,0,0);
+		DateTime end4 = new DateTime(2009,5,12,0,0);
+		
+		Event a = new NamedEvent("EventA", start,end);
+		Event b = new NamedEvent("EventB", start2,end2);
+		Event c = new NamedEvent("EventC", start3,end3); // Occurred during query
+		Event d = new NamedEvent("EventD", start4,end4);
+		
+		ArrayList<Event> list = new ArrayList<Event>();
+		Collections.addAll(list,a,b,c,d);
+		timeline.addAll(list);
+		
+		System.out.println(timeline);
+				
+		System.out.println(timeline.occurredDuring(new DateTime(2000,12,25,0,0), new DateTime(2003,12,25,0,0)));
+		
+	}
+	
+	@Test
+	public void testPartiallyContained(){
+		DateTime start = new DateTime(2001,12,25,0,0);
+		DateTime start2 = new DateTime(2004,12,25,0,0);
+		DateTime end = new DateTime(2003,12,25,0,0);
+		DateTime end2 = new DateTime(2008,12,25,0,0);
+		DateTime end3 = new DateTime(2012,3,4,0,0);
+		
+		Event a = new NamedEvent("EventA", start);
+		Event b = new NamedEvent("EventB", start,end); // partially contained
+		Event c = new NamedEvent("EventC", start,end3);
+		Event d = new NamedEvent("EventD", start2,end2); // partially contained
+		ArrayList<Event> list = new ArrayList<Event>();
+		Collections.addAll(list,a,b,c,d);
+		timeline.addAll(list);
+		System.out.println(timeline);
+		
+		System.out.println(timeline.partiallyContained(new DateTime(2002,1,1,0,0), new DateTime(2006,3,12,0,0)));
+		
+	}
+	
+	@Test
+	public void testIfAnyPartOfEventIsInQuery(){
+		DateTime start = new DateTime(1997,10,25,0,0);
+		DateTime start2 = new DateTime(1999,12,25,0,0);
+		DateTime start3 = new DateTime(2001,12,3,0,0);
+		DateTime start4 = new DateTime(2002,4,5,0,0);
+		DateTime start5 = new DateTime(2005,5,12,0,0);
+		DateTime start6 = new DateTime(1995,10,17,0,0);
+		DateTime start7 = new DateTime(2000,12,25,0,0);
+		
+		DateTime end = new DateTime(1999,12,25,0,0);
+		DateTime end2 = new DateTime(2001,12,25,0,0);
+		DateTime end3 = new DateTime(2002,10,12,0,0);
+		DateTime end4 = new DateTime(2004,5,12,0,0);
+		DateTime end5 = new DateTime(2007,3,12,0,0);
+		DateTime end6 = new DateTime(2010,4,15,0,0);
+		DateTime end7 = new DateTime(2003,12,25,0,0);
+		
+		Event a = new NamedEvent("EventA", start,end);
+		Event b = new NamedEvent("EventB", start2,end2); // included
+		Event c = new NamedEvent("EventC", start3,end3); // included
+		Event d = new NamedEvent("EventD", start4,end4); // included
+		Event e = new NamedEvent("EventE", start5, end5);
+		Event f = new NamedEvent("EventF", start6, end6); // included
+		Event g = new NamedEvent("EventG", start7, end7); // included
+		ArrayList<Event> list = new ArrayList<Event>();
+		Collections.addAll(list,a,b,c,d,e,f,g);
+		timeline.addAll(list);
+		
+		System.out.println(timeline.includedInQuery(new DateTime(2000,1,1,0,0), new DateTime(2003,12,25,0,0)));
+	}
+	
+	@Test
+	public void testOverlapsQuery(){
+		DateTime start = new DateTime(1998,12,25,0,0);
+		DateTime start2 = new DateTime(2004,12,25,0,0);
+		DateTime end = new DateTime(2012,12,25,0,0);
+		DateTime end2 = new DateTime(2008,12,25,0,0);
+		
+		Event a = new NamedEvent("EventA", start);
+		Event b = new NamedEvent("EventB", start,end); // overlaps
+		Event c = new NamedEvent("EventC", start2,end);
+		Event d = new NamedEvent("EventD", start2,end2);
+		ArrayList<Event> list = new ArrayList<Event>();
+		Collections.addAll(list,a,b,c,d);
+		timeline.addAll(list);
+		System.out.println(timeline);
+		
+		System.out.println(timeline.overlapsQuery(new DateTime(2003,12,25,0,0), new DateTime(2005,12,25,0,0)));
+
+	}
+	
+	@Test
+	public void testSame(){
+		
+//		NamedEventGenerator g = new NamedEventGenerator();
+		
+		
+		DateTime start = new DateTime(2003,12,25,0,0);
+		DateTime start2 = new DateTime(2004,12,25,0,0);
+		DateTime end = new DateTime(2005,12,25,0,0);
+		DateTime end2 = new DateTime(2008,12,25,0,0);
+		
+		DateTime start3 = new DateTime(1999,12,3,0,0);
+		DateTime end3 = new DateTime(2001,10,12,0,0);
+		Event a = new NamedEvent("EventA", start);
+		Event b = new NamedEvent("EventB", start,end); // same as
+		Event c = new NamedEvent("EventC", start,end); // same as
+		Event d = new NamedEvent("EventD", start2,end2);
+		
+		Event e = new NamedEvent("EventE", start3,end3);
+		
+		ArrayList<Event> list = new ArrayList<Event>();
+		Collections.addAll(list,a,b,c,d,e);
+		timeline.addAll(list);
+		
+		
+		System.out.println(timeline.same(new DateTime(2003,12,25,0,0), new DateTime(2005,12,25,0,0)));
 	}
 }
